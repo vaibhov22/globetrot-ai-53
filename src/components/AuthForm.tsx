@@ -58,14 +58,14 @@ export const AuthForm = ({ mode, onSuccess, onToggleMode }: AuthFormProps) => {
   };
 
   return (
-    <Card className="p-8 max-w-md w-full mx-auto bg-gradient-to-br from-card to-secondary/20 shadow-card">
-      <h2 className="text-3xl font-bold text-foreground mb-6 text-center">
+    <Card className="p-10 max-w-lg w-full mx-auto bg-[var(--gradient-card)] shadow-[var(--shadow-xl)] border-2 border-border/50 rounded-2xl animate-fade-in-scale backdrop-blur-sm">
+      <h2 className="text-4xl font-black text-center mb-8 bg-gradient-to-r from-primary to-primary-dark bg-clip-text text-transparent">
         {mode === "login" ? "Welcome Back" : "Create Account"}
       </h2>
       
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div className="space-y-2">
-          <Label htmlFor="email">Email</Label>
+      <form onSubmit={handleSubmit} className="space-y-6">
+        <div className="space-y-3">
+          <Label htmlFor="email" className="text-base font-semibold">Email</Label>
           <Input
             id="email"
             type="email"
@@ -73,12 +73,12 @@ export const AuthForm = ({ mode, onSuccess, onToggleMode }: AuthFormProps) => {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
-            className="transition-all duration-300 focus:ring-2 focus:ring-primary"
+            className="h-12 text-base border-2 focus:border-primary focus:ring-4 focus:ring-primary/20 transition-all duration-300 rounded-xl"
           />
         </div>
 
-        <div className="space-y-2">
-          <Label htmlFor="password">Password</Label>
+        <div className="space-y-3">
+          <Label htmlFor="password" className="text-base font-semibold">Password</Label>
           <Input
             id="password"
             type="password"
@@ -87,23 +87,23 @@ export const AuthForm = ({ mode, onSuccess, onToggleMode }: AuthFormProps) => {
             onChange={(e) => setPassword(e.target.value)}
             required
             minLength={6}
-            className="transition-all duration-300 focus:ring-2 focus:ring-primary"
+            className="h-12 text-base border-2 focus:border-primary focus:ring-4 focus:ring-primary/20 transition-all duration-300 rounded-xl"
           />
         </div>
 
         <Button
           type="submit"
           disabled={isLoading}
-          className="w-full bg-primary hover:bg-primary/90 text-primary-foreground"
+          className="w-full bg-gradient-to-r from-primary to-primary-dark hover:from-primary-dark hover:to-primary text-primary-foreground font-bold text-lg py-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02] disabled:opacity-50"
         >
           {isLoading ? "Loading..." : mode === "login" ? "Log In" : "Sign Up"}
         </Button>
       </form>
 
-      <div className="mt-6 text-center">
+      <div className="mt-8 text-center">
         <button
           onClick={onToggleMode}
-          className="text-primary hover:text-primary/80 text-sm font-medium transition-colors"
+          className="text-primary hover:text-primary-dark text-base font-semibold transition-all duration-300 hover:scale-105 inline-block"
         >
           {mode === "login" ? "Don't have an account? Sign up" : "Already have an account? Log in"}
         </button>

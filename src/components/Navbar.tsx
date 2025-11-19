@@ -21,20 +21,25 @@ export const Navbar = ({ isAuthenticated, onLoginClick, onMyTripsClick }: Navbar
   };
 
   return (
-    <nav className="bg-card/80 backdrop-blur-sm border-b border-border sticky top-0 z-50">
-      <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <Plane className="w-8 h-8 text-primary" />
-          <span className="text-2xl font-bold text-foreground">TripAI</span>
+    <nav className="bg-card/70 backdrop-blur-xl border-b border-border/50 sticky top-0 z-50 shadow-sm">
+      <div className="container mx-auto px-6 py-5 flex items-center justify-between">
+        <div className="flex items-center gap-3 group cursor-pointer">
+          <div className="relative">
+            <Plane className="w-9 h-9 text-primary group-hover:scale-110 transition-transform duration-300" />
+            <div className="absolute inset-0 bg-primary/20 blur-xl rounded-full group-hover:bg-primary/30 transition-all duration-300" />
+          </div>
+          <span className="text-3xl font-black bg-gradient-to-r from-primary to-primary-dark bg-clip-text text-transparent">
+            TripAI
+          </span>
         </div>
         
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3">
           {isAuthenticated ? (
             <>
               <Button 
                 variant="ghost" 
                 onClick={onMyTripsClick}
-                className="hover:bg-secondary"
+                className="hover:bg-secondary/80 transition-all duration-300 hover:scale-105 font-medium"
               >
                 <User className="w-4 h-4 mr-2" />
                 My Trips
@@ -42,14 +47,17 @@ export const Navbar = ({ isAuthenticated, onLoginClick, onMyTripsClick }: Navbar
               <Button 
                 variant="ghost" 
                 onClick={handleLogout}
-                className="hover:bg-secondary"
+                className="hover:bg-secondary/80 transition-all duration-300 hover:scale-105 font-medium"
               >
                 <LogOut className="w-4 h-4 mr-2" />
                 Logout
               </Button>
             </>
           ) : (
-            <Button onClick={onLoginClick} className="bg-primary hover:bg-primary/90 text-primary-foreground">
+            <Button 
+              onClick={onLoginClick} 
+              className="bg-gradient-to-r from-primary to-primary-dark hover:from-primary-dark hover:to-primary text-primary-foreground font-semibold shadow-md hover:shadow-lg transition-all duration-300 hover:scale-105"
+            >
               Login
             </Button>
           )}
