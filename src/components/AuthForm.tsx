@@ -1,10 +1,27 @@
-import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+
+const authFormSchema = z.object({
+  email: z
+    .string()
+    .trim()
+    .min(1, "Email is required")
+    .email("Invalid email address")
+    .max(255, "Email must be less than 255 characters"),
+  password: z
+    .string()
+    .min(6, "Password must be at least 6 characters")
+    .max(128, "Password must be less than 128 characters"),
+});
+
+type AuthFormData = z.infer<typeof authFormSchema>;
 
 interface AuthFormProps {
   mode: "login" | "signup";
@@ -13,20 +30,29 @@ interface AuthFormProps {
 }
 
 export const AuthForm = ({ mode, onSuccess, onToggleMode }: AuthFormProps) => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<AuthFormData>({
+    resolver: zodResolver(authFormSchema),
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+  });
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
-
+  const onSubmitForm = async (data: AuthFormData) => {
     try {
       if (mode === "signup") {
+        const redirectUrl = `${window.location.origin}/`;
         const { error } = await supabase.auth.signUp({
-          email,
-          password,
+          email: data.email,
+          password: data.password,
+          options: {
+            emailRedirectTo: redirectUrl,
+          },
         });
         if (error) throw error;
         toast({
@@ -36,8 +62,8 @@ export const AuthForm = ({ mode, onSuccess, onToggleMode }: AuthFormProps) => {
         onSuccess();
       } else {
         const { error } = await supabase.auth.signInWithPassword({
-          email,
-          password,
+          email: data.email,
+          password: data.password,
         });
         if (error) throw error;
         toast({
@@ -52,8 +78,6 @@ export const AuthForm = ({ mode, onSuccess, onToggleMode }: AuthFormProps) => {
         description: error.message,
         variant: "destructive",
       });
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -63,18 +87,19 @@ export const AuthForm = ({ mode, onSuccess, onToggleMode }: AuthFormProps) => {
         {mode === "login" ? "Welcome Back" : "Create Account"}
       </h2>
       
-      <form onSubmit={handleSubmit} className="space-y-6">
+      <form onSubmit={handleSubmit(onSubmitForm)} className="space-y-6">
         <div className="space-y-3">
           <Label htmlFor="email" className="text-base font-semibold">Email</Label>
           <Input
             id="email"
             type="email"
             placeholder="your@email.com"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
+            {...register("email")}
             className="h-12 text-base border-2 focus:border-primary focus:ring-4 focus:ring-primary/20 transition-all duration-300 rounded-xl"
           />
+          {errors.email && (
+            <p className="text-sm text-destructive">{errors.email.message}</p>
+          )}
         </div>
 
         <div className="space-y-3">
@@ -83,20 +108,20 @@ export const AuthForm = ({ mode, onSuccess, onToggleMode }: AuthFormProps) => {
             id="password"
             type="password"
             placeholder="••••••••"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-            minLength={6}
+            {...register("password")}
             className="h-12 text-base border-2 focus:border-primary focus:ring-4 focus:ring-primary/20 transition-all duration-300 rounded-xl"
           />
+          {errors.password && (
+            <p className="text-sm text-destructive">{errors.password.message}</p>
+          )}
         </div>
 
         <Button
           type="submit"
-          disabled={isLoading}
+          disabled={isSubmitting}
           className="w-full bg-gradient-to-r from-primary to-primary-dark hover:from-primary-dark hover:to-primary text-primary-foreground font-bold text-lg py-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02] disabled:opacity-50"
         >
-          {isLoading ? "Loading..." : mode === "login" ? "Log In" : "Sign Up"}
+          {isSubmitting ? "Loading..." : mode === "login" ? "Log In" : "Sign Up"}
         </Button>
       </form>
 

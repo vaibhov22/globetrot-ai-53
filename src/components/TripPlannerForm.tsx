@@ -1,4 +1,6 @@
-import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -6,31 +8,68 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card } from "@/components/ui/card";
 import { Calendar, DollarSign, MapPin, Sparkles } from "lucide-react";
 
+const tripFormSchema = z.object({
+  destination: z
+    .string()
+    .trim()
+    .min(1, "Destination is required")
+    .max(200, "Destination must be less than 200 characters"),
+  startDate: z
+    .string()
+    .min(1, "Start date is required")
+    .refine((date) => !isNaN(Date.parse(date)), "Invalid start date"),
+  endDate: z
+    .string()
+    .min(1, "End date is required")
+    .refine((date) => !isNaN(Date.parse(date)), "Invalid end date"),
+  budget: z
+    .string()
+    .max(100, "Budget must be less than 100 characters")
+    .optional()
+    .or(z.literal("")),
+  preferences: z
+    .string()
+    .max(1000, "Preferences must be less than 1000 characters")
+    .optional()
+    .or(z.literal("")),
+}).refine(
+  (data) => {
+    if (data.startDate && data.endDate) {
+      return new Date(data.endDate) >= new Date(data.startDate);
+    }
+    return true;
+  },
+  {
+    message: "End date must be after or equal to start date",
+    path: ["endDate"],
+  }
+);
+
 interface TripPlannerFormProps {
   onSubmit: (formData: TripFormData) => void;
   isLoading: boolean;
 }
 
-export interface TripFormData {
-  destination: string;
-  startDate: string;
-  endDate: string;
-  budget: string;
-  preferences: string;
-}
+export type TripFormData = z.infer<typeof tripFormSchema>;
 
 export const TripPlannerForm = ({ onSubmit, isLoading }: TripPlannerFormProps) => {
-  const [formData, setFormData] = useState<TripFormData>({
-    destination: "",
-    startDate: "",
-    endDate: "",
-    budget: "",
-    preferences: "",
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<TripFormData>({
+    resolver: zodResolver(tripFormSchema),
+    defaultValues: {
+      destination: "",
+      startDate: "",
+      endDate: "",
+      budget: "",
+      preferences: "",
+    },
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    onSubmit(formData);
+  const onSubmitForm = (data: TripFormData) => {
+    onSubmit(data);
   };
 
   return (
@@ -43,7 +82,7 @@ export const TripPlannerForm = ({ onSubmit, isLoading }: TripPlannerFormProps) =
         <h2 className="text-4xl font-black text-foreground">Plan Your Trip</h2>
       </div>
       
-      <form onSubmit={handleSubmit} className="space-y-6">
+      <form onSubmit={handleSubmit(onSubmitForm)} className="space-y-6">
         <div className="space-y-3">
           <Label htmlFor="destination" className="flex items-center gap-2 text-base font-semibold">
             <MapPin className="w-5 h-5 text-primary" />
@@ -52,11 +91,12 @@ export const TripPlannerForm = ({ onSubmit, isLoading }: TripPlannerFormProps) =
           <Input
             id="destination"
             placeholder="e.g., Paris, France"
-            value={formData.destination}
-            onChange={(e) => setFormData({ ...formData, destination: e.target.value })}
-            required
+            {...register("destination")}
             className="h-12 text-base border-2 focus:border-primary focus:ring-4 focus:ring-primary/20 transition-all duration-300 rounded-xl"
           />
+          {errors.destination && (
+            <p className="text-sm text-destructive">{errors.destination.message}</p>
+          )}
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -68,11 +108,12 @@ export const TripPlannerForm = ({ onSubmit, isLoading }: TripPlannerFormProps) =
             <Input
               id="startDate"
               type="date"
-              value={formData.startDate}
-              onChange={(e) => setFormData({ ...formData, startDate: e.target.value })}
-              required
+              {...register("startDate")}
               className="h-12 text-base border-2 focus:border-primary focus:ring-4 focus:ring-primary/20 transition-all duration-300 rounded-xl"
             />
+            {errors.startDate && (
+              <p className="text-sm text-destructive">{errors.startDate.message}</p>
+            )}
           </div>
 
           <div className="space-y-3">
@@ -83,11 +124,12 @@ export const TripPlannerForm = ({ onSubmit, isLoading }: TripPlannerFormProps) =
             <Input
               id="endDate"
               type="date"
-              value={formData.endDate}
-              onChange={(e) => setFormData({ ...formData, endDate: e.target.value })}
-              required
+              {...register("endDate")}
               className="h-12 text-base border-2 focus:border-primary focus:ring-4 focus:ring-primary/20 transition-all duration-300 rounded-xl"
             />
+            {errors.endDate && (
+              <p className="text-sm text-destructive">{errors.endDate.message}</p>
+            )}
           </div>
         </div>
 
@@ -99,10 +141,12 @@ export const TripPlannerForm = ({ onSubmit, isLoading }: TripPlannerFormProps) =
           <Input
             id="budget"
             placeholder="e.g., $2000"
-            value={formData.budget}
-            onChange={(e) => setFormData({ ...formData, budget: e.target.value })}
+            {...register("budget")}
             className="h-12 text-base border-2 focus:border-primary focus:ring-4 focus:ring-primary/20 transition-all duration-300 rounded-xl"
           />
+          {errors.budget && (
+            <p className="text-sm text-destructive">{errors.budget.message}</p>
+          )}
         </div>
 
         <div className="space-y-3">
@@ -112,10 +156,12 @@ export const TripPlannerForm = ({ onSubmit, isLoading }: TripPlannerFormProps) =
           <Textarea
             id="preferences"
             placeholder="e.g., museums, local food, hiking, beaches, photography, nightlife..."
-            value={formData.preferences}
-            onChange={(e) => setFormData({ ...formData, preferences: e.target.value })}
+            {...register("preferences")}
             className="min-h-[120px] text-base border-2 focus:border-primary focus:ring-4 focus:ring-primary/20 transition-all duration-300 rounded-xl resize-none"
           />
+          {errors.preferences && (
+            <p className="text-sm text-destructive">{errors.preferences.message}</p>
+          )}
         </div>
 
         <Button
