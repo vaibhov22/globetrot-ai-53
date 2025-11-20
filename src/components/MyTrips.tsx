@@ -3,7 +3,8 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { Calendar, MapPin, Trash2 } from "lucide-react";
+import { Calendar, MapPin, Trash2, ChevronDown, ChevronUp } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 interface Trip {
   id: string;
@@ -22,6 +23,7 @@ interface MyTripsProps {
 export const MyTrips = ({ onBack }: MyTripsProps) => {
   const [trips, setTrips] = useState<Trip[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [selectedTrip, setSelectedTrip] = useState<Trip | null>(null);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -118,8 +120,9 @@ export const MyTrips = ({ onBack }: MyTripsProps) => {
             {trips.map((trip, index) => (
               <Card
                 key={trip.id}
-                className="p-8 bg-[var(--gradient-card)] hover:bg-[var(--gradient-card-hover)] shadow-[var(--shadow-md)] hover:shadow-[var(--shadow-xl)] transition-all duration-500 hover:scale-[1.03] border-2 border-border/50 rounded-2xl group animate-fade-in-scale"
+                className="p-8 bg-[var(--gradient-card)] hover:bg-[var(--gradient-card-hover)] shadow-[var(--shadow-md)] hover:shadow-[var(--shadow-xl)] transition-all duration-500 hover:scale-[1.03] border-2 border-border/50 rounded-2xl group animate-fade-in-scale cursor-pointer"
                 style={{ animationDelay: `${index * 100}ms` }}
+                onClick={() => setSelectedTrip(trip)}
               >
                 <div className="flex items-start justify-between mb-6">
                   <div className="flex items-center gap-3 flex-1">
@@ -134,7 +137,10 @@ export const MyTrips = ({ onBack }: MyTripsProps) => {
                   <Button
                     variant="ghost"
                     size="sm"
-                    onClick={() => handleDelete(trip.id)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleDelete(trip.id);
+                    }}
                     className="text-destructive hover:text-destructive hover:bg-destructive/10 transition-all duration-300 hover:scale-110"
                   >
                     <Trash2 className="w-5 h-5" />
@@ -159,9 +165,12 @@ export const MyTrips = ({ onBack }: MyTripsProps) => {
                 <div className="text-sm text-foreground">
                   {trip.itinerary?.days && (
                     <div className="mt-6 pt-6 border-t-2 border-border/30">
-                      <p className="text-base font-bold text-foreground mb-3 flex items-center gap-2">
-                        <span className="text-primary">📅</span>
-                        {trip.itinerary.days.length} day itinerary
+                      <p className="text-base font-bold text-foreground mb-3 flex items-center justify-between">
+                        <span className="flex items-center gap-2">
+                          <span className="text-primary">📅</span>
+                          {trip.itinerary.days.length} day itinerary
+                        </span>
+                        <ChevronDown className="w-5 h-5 text-primary group-hover:translate-y-1 transition-transform duration-300" />
                       </p>
                     </div>
                   )}
@@ -171,6 +180,79 @@ export const MyTrips = ({ onBack }: MyTripsProps) => {
           </div>
         )}
       </div>
+
+      <Dialog open={!!selectedTrip} onOpenChange={() => setSelectedTrip(null)}>
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto bg-background">
+          {selectedTrip && (
+            <>
+              <DialogHeader>
+                <DialogTitle className="flex items-center gap-3 text-3xl font-black">
+                  <MapPin className="w-8 h-8 text-primary" />
+                  {selectedTrip.destination}
+                </DialogTitle>
+                <div className="flex items-center gap-2 text-muted-foreground text-lg">
+                  <Calendar className="w-5 h-5" />
+                  <span>{new Date(selectedTrip.start_date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })} - {new Date(selectedTrip.end_date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</span>
+                </div>
+                {selectedTrip.budget && (
+                  <div className="mt-2 p-3 bg-primary/5 rounded-lg border border-primary/20 inline-block">
+                    <p className="text-base text-muted-foreground">
+                      Budget: <span className="font-bold text-foreground text-lg">{selectedTrip.budget}</span>
+                    </p>
+                  </div>
+                )}
+              </DialogHeader>
+
+              <div className="mt-6">
+                {selectedTrip.itinerary?.days && selectedTrip.itinerary.days.length > 0 ? (
+                  <div className="space-y-5">
+                    {selectedTrip.itinerary.days.map((day: any, index: number) => (
+                      <div 
+                        key={index} 
+                        className="relative pl-8 py-5 pr-6 rounded-xl border-l-[6px] border-primary bg-gradient-to-r from-primary/5 to-transparent hover:from-primary/10 hover:to-primary/5 transition-all duration-500"
+                      >
+                        <div className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-1/2 w-4 h-4 bg-primary rounded-full shadow-lg shadow-primary/50" />
+                        <h3 className="text-2xl font-bold text-primary mb-4">
+                          Day {day.day}: {day.title}
+                        </h3>
+                        <ul className="space-y-3">
+                          {day.activities.map((activity: string, actIndex: number) => (
+                            <li key={actIndex} className="text-foreground text-lg leading-relaxed flex items-start gap-3">
+                              <span className="text-primary font-bold mt-1">•</span>
+                              <span>{activity}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-foreground whitespace-pre-wrap bg-muted/30 p-6 rounded-xl border border-border">
+                    {JSON.stringify(selectedTrip.itinerary, null, 2)}
+                  </div>
+                )}
+
+                {selectedTrip.itinerary?.tips && (
+                  <div className="mt-10 p-8 bg-gradient-to-br from-accent/10 to-accent/5 rounded-2xl border-2 border-accent/30 shadow-lg">
+                    <h3 className="text-2xl font-bold text-accent mb-5 flex items-center gap-2">
+                      <span className="text-3xl">💡</span>
+                      Travel Tips
+                    </h3>
+                    <ul className="space-y-4">
+                      {selectedTrip.itinerary.tips.map((tip: string, index: number) => (
+                        <li key={index} className="text-foreground text-lg leading-relaxed flex items-start gap-3 p-3 rounded-lg hover:bg-accent/5 transition-colors duration-300">
+                          <span className="text-accent font-bold mt-1">•</span>
+                          <span>{tip}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </div>
+            </>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
