@@ -11,7 +11,6 @@ interface NavbarProps {
 
 export const Navbar = ({ isAuthenticated, onLoginClick, onMyTripsClick }: NavbarProps) => {
   const { toast } = useToast();
-  const navigate = useNavigate();
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
