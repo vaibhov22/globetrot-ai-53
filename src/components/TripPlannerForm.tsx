@@ -67,6 +67,7 @@ export const TripPlannerForm = ({ onSubmit, isLoading }: TripPlannerFormProps): 
   } = useForm<TripFormData>({
     resolver: zodResolver(tripFormSchema),
     defaultValues: {
+      origin: "",
       destination: "",
       startDate: "",
       endDate: "",
