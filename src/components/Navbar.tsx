@@ -1,7 +1,8 @@
 import { Button } from "@/components/ui/button";
-import { Plane, User, LogOut } from "lucide-react";
+import { Plane, User, LogOut, Train } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { useNavigate } from "react-router-dom";
 
 interface NavbarProps {
   isAuthenticated: boolean;
@@ -11,6 +12,7 @@ interface NavbarProps {
 
 export const Navbar = ({ isAuthenticated, onLoginClick, onMyTripsClick }: NavbarProps) => {
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
@@ -34,6 +36,14 @@ export const Navbar = ({ isAuthenticated, onLoginClick, onMyTripsClick }: Navbar
         </div>
         
         <div className="flex items-center gap-3">
+          <Button 
+            variant="ghost" 
+            onClick={() => navigate("/transport")}
+            className="hover:bg-secondary/80 transition-all duration-300 hover:scale-105 font-medium"
+          >
+            <Train className="w-4 h-4 mr-2" />
+            Transport Guide
+          </Button>
           {isAuthenticated ? (
             <>
               <Button 
