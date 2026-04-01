@@ -11,6 +11,10 @@ import { Calendar, DollarSign, MapPin, Sparkles } from "lucide-react";
 import { UP_CITIES } from "@/data/upCities";
 
 const tripFormSchema = z.object({
+  origin: z
+    .string()
+    .trim()
+    .min(1, "Origin city is required"),
   destination: z
     .string()
     .trim()
