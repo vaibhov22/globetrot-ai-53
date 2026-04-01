@@ -90,11 +90,21 @@ export const TripPlannerForm = ({ onSubmit, isLoading }: TripPlannerFormProps) =
             <MapPin className="w-5 h-5 text-primary" />
             Destination
           </Label>
-          <Input
-            id="destination"
-            placeholder="e.g., Paris, France"
-            {...register("destination")}
-            className="h-12 text-base border-2 focus:border-primary focus:ring-4 focus:ring-primary/20 transition-all duration-300 rounded-xl"
+          <Controller
+            name="destination"
+            control={control}
+            render={({ field }) => (
+              <Select value={field.value} onValueChange={field.onChange}>
+                <SelectTrigger className="h-12 text-base border-2 focus:border-primary focus:ring-4 focus:ring-primary/20 transition-all duration-300 rounded-xl">
+                  <SelectValue placeholder="Select a city in Uttar Pradesh" />
+                </SelectTrigger>
+                <SelectContent className="max-h-60">
+                  {UP_CITIES.map(city => (
+                    <SelectItem key={city} value={city}>{city}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            )}
           />
           {errors.destination && (
             <p className="text-sm text-destructive">{errors.destination.message}</p>
