@@ -58,6 +58,7 @@ export const TripPlannerForm = ({ onSubmit, isLoading }: TripPlannerFormProps) =
   const {
     register,
     handleSubmit,
+    control,
     formState: { errors },
   } = useForm<TripFormData>({
     resolver: zodResolver(tripFormSchema),

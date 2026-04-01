@@ -36,6 +36,14 @@ export const Navbar = ({ isAuthenticated, onLoginClick, onMyTripsClick }: Navbar
         </div>
         
         <div className="flex items-center gap-3">
+          <Button 
+            variant="ghost" 
+            onClick={() => navigate("/transport")}
+            className="hover:bg-secondary/80 transition-all duration-300 hover:scale-105 font-medium"
+          >
+            <Train className="w-4 h-4 mr-2" />
+            Transport Guide
+          </Button>
           {isAuthenticated ? (
             <>
               <Button 
