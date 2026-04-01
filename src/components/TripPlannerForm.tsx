@@ -54,7 +54,7 @@ interface TripPlannerFormProps {
 
 export type TripFormData = z.infer<typeof tripFormSchema>;
 
-export const TripPlannerForm = ({ onSubmit, isLoading }: TripPlannerFormProps) => {
+export const TripPlannerForm = ({ onSubmit, isLoading }: TripPlannerFormProps): JSX.Element => {
   const {
     register,
     handleSubmit,
