@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Plane, User, LogOut, Train } from "lucide-react";
+import { Plane, User, LogOut } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
