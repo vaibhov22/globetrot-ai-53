@@ -91,30 +91,58 @@ export const TripPlannerForm = ({ onSubmit, isLoading }: TripPlannerFormProps): 
       </div>
       
       <form onSubmit={handleSubmit(onSubmitForm)} className="space-y-6">
-        <div className="space-y-3">
-          <Label htmlFor="destination" className="flex items-center gap-2 text-base font-semibold">
-            <MapPin className="w-5 h-5 text-primary" />
-            Destination
-          </Label>
-          <Controller
-            name="destination"
-            control={control}
-            render={({ field }) => (
-              <Select value={field.value} onValueChange={field.onChange}>
-                <SelectTrigger className="h-12 text-base border-2 focus:border-primary focus:ring-4 focus:ring-primary/20 transition-all duration-300 rounded-xl">
-                  <SelectValue placeholder="Select a city in Uttar Pradesh" />
-                </SelectTrigger>
-                <SelectContent className="max-h-60">
-                  {UP_CITIES.map(city => (
-                    <SelectItem key={city} value={city}>{city}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="space-y-3">
+            <Label htmlFor="origin" className="flex items-center gap-2 text-base font-semibold">
+              <MapPin className="w-5 h-5 text-primary" />
+              From (Origin)
+            </Label>
+            <Controller
+              name="origin"
+              control={control}
+              render={({ field }) => (
+                <Select value={field.value} onValueChange={field.onChange}>
+                  <SelectTrigger className="h-12 text-base border-2 focus:border-primary focus:ring-4 focus:ring-primary/20 transition-all duration-300 rounded-xl">
+                    <SelectValue placeholder="Select origin city" />
+                  </SelectTrigger>
+                  <SelectContent className="max-h-60">
+                    {UP_CITIES.map(city => (
+                      <SelectItem key={city} value={city}>{city}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              )}
+            />
+            {errors.origin && (
+              <p className="text-sm text-destructive">{errors.origin.message}</p>
             )}
-          />
-          {errors.destination && (
-            <p className="text-sm text-destructive">{errors.destination.message}</p>
-          )}
+          </div>
+
+          <div className="space-y-3">
+            <Label htmlFor="destination" className="flex items-center gap-2 text-base font-semibold">
+              <MapPin className="w-5 h-5 text-accent" />
+              To (Destination)
+            </Label>
+            <Controller
+              name="destination"
+              control={control}
+              render={({ field }) => (
+                <Select value={field.value} onValueChange={field.onChange}>
+                  <SelectTrigger className="h-12 text-base border-2 focus:border-primary focus:ring-4 focus:ring-primary/20 transition-all duration-300 rounded-xl">
+                    <SelectValue placeholder="Select destination city" />
+                  </SelectTrigger>
+                  <SelectContent className="max-h-60">
+                    {UP_CITIES.map(city => (
+                      <SelectItem key={city} value={city}>{city}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              )}
+            />
+            {errors.destination && (
+              <p className="text-sm text-destructive">{errors.destination.message}</p>
+            )}
+          </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

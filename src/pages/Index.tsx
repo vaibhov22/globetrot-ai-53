@@ -170,6 +170,7 @@ const Index = () => {
           {itinerary && currentTripData && (
             <ItineraryDisplay
               itinerary={itinerary}
+              origin={currentTripData.origin}
               destination={currentTripData.destination}
               startDate={currentTripData.startDate}
               endDate={currentTripData.endDate}
