@@ -15,12 +15,22 @@ interface ItineraryDisplayProps {
 
 export const ItineraryDisplay = ({ 
   itinerary, 
+  origin,
   destination, 
   startDate, 
   endDate, 
   onSave, 
   isSaving 
 }: ItineraryDisplayProps) => {
+  const routes = TRANSPORT_ROUTES.filter(
+    (r) =>
+      (r.from.toLowerCase() === origin.toLowerCase() && r.to.toLowerCase() === destination.toLowerCase()) ||
+      (r.from.toLowerCase() === destination.toLowerCase() && r.to.toLowerCase() === origin.toLowerCase())
+  );
+
+  const trainRoutes = routes.filter((r) => r.type === "train");
+  const busRoutes = routes.filter((r) => r.type === "bus");
+
   return (
     <Card className="p-10 bg-[var(--gradient-card)] shadow-[var(--shadow-xl)] border-2 border-border/50 rounded-2xl animate-fade-in-scale backdrop-blur-sm">
       <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 mb-8 pb-6 border-b-2 border-border/30">
