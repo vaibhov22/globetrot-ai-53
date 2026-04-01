@@ -35,12 +35,14 @@ export const ItineraryDisplay = ({
     <Card className="p-10 bg-[var(--gradient-card)] shadow-[var(--shadow-xl)] border-2 border-border/50 rounded-2xl animate-fade-in-scale backdrop-blur-sm">
       <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 mb-8 pb-6 border-b-2 border-border/30">
         <div className="flex-1">
-          <div className="flex items-center gap-3 mb-3">
+          <div className="flex items-center gap-3 mb-3 flex-wrap">
             <div className="relative">
               <MapPin className="w-7 h-7 text-primary" />
               <div className="absolute inset-0 bg-primary/30 blur-xl rounded-full" />
             </div>
-            <h2 className="text-4xl md:text-5xl font-black bg-gradient-to-r from-primary to-primary-dark bg-clip-text text-transparent">{destination}</h2>
+            <h2 className="text-3xl md:text-4xl font-black bg-gradient-to-r from-primary to-primary-dark bg-clip-text text-transparent">{origin}</h2>
+            <ArrowRight className="w-7 h-7 text-muted-foreground" />
+            <h2 className="text-3xl md:text-4xl font-black bg-gradient-to-r from-accent to-primary bg-clip-text text-transparent">{destination}</h2>
           </div>
           <div className="flex items-center gap-2 text-muted-foreground text-lg ml-10">
             <Calendar className="w-5 h-5" />
