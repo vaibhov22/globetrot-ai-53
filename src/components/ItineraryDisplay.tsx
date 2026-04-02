@@ -2,6 +2,8 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Calendar, MapPin, Save, Train, Bus, ArrowRight, Clock, IndianRupee } from "lucide-react";
 import { TRANSPORT_ROUTES } from "@/data/upCities";
+import { FoodSection } from "@/components/FoodSection";
+import { OptionalActivities } from "@/components/OptionalActivities";
 
 interface ItineraryDisplayProps {
   itinerary: any;
