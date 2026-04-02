@@ -1,6 +1,6 @@
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Calendar, MapPin, Save, Train, Bus, ArrowRight, Clock, IndianRupee } from "lucide-react";
+import { Calendar, MapPin, Save, Train, Bus, ArrowRight, Clock, IndianRupee, Wallet } from "lucide-react";
 import { TRANSPORT_ROUTES } from "@/data/upCities";
 import { FoodSection } from "@/components/FoodSection";
 import { OptionalActivities } from "@/components/OptionalActivities";
@@ -11,8 +11,39 @@ interface ItineraryDisplayProps {
   destination: string;
   startDate: string;
   endDate: string;
+  budget?: string;
   onSave: () => void;
   isSaving: boolean;
+}
+
+const BUDGET_RANGES: Record<string, { low: number; high: number }> = {
+  "budget": { low: 1500, high: 3000 },
+  "mid-range": { low: 3000, high: 6000 },
+  "premium": { low: 6000, high: 15000 },
+};
+
+function getBudgetEstimate(budgetLevel: string | undefined, startDate: string, endDate: string) {
+  const start = new Date(startDate);
+  const end = new Date(endDate);
+  const days = Math.max(1, Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)) + 1);
+  
+  if (!budgetLevel || !BUDGET_RANGES[budgetLevel]) {
+    // Default mid-range
+    return {
+      days,
+      low: `₹${(days * 1500).toLocaleString("en-IN")}`,
+      mid: `₹${(days * 4500).toLocaleString("en-IN")}`,
+      high: `₹${(days * 10000).toLocaleString("en-IN")}`,
+    };
+  }
+  
+  const range = BUDGET_RANGES[budgetLevel];
+  return {
+    days,
+    low: `₹${(days * range.low).toLocaleString("en-IN")}`,
+    mid: `₹${(days * Math.round((range.low + range.high) / 2)).toLocaleString("en-IN")}`,
+    high: `₹${(days * range.high).toLocaleString("en-IN")}`,
+  };
 }
 
 export const ItineraryDisplay = ({ 
@@ -21,6 +52,7 @@ export const ItineraryDisplay = ({
   destination, 
   startDate, 
   endDate, 
+  budget,
   onSave, 
   isSaving 
 }: ItineraryDisplayProps) => {
@@ -32,6 +64,7 @@ export const ItineraryDisplay = ({
 
   const trainRoutes = routes.filter((r) => r.type === "train");
   const busRoutes = routes.filter((r) => r.type === "bus");
+  const budgetEst = getBudgetEstimate(budget, startDate, endDate);
 
   return (
     <Card className="p-10 bg-[var(--gradient-card)] shadow-[var(--shadow-xl)] border-2 border-border/50 rounded-2xl animate-fade-in-scale backdrop-blur-sm">
