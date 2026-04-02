@@ -7,19 +7,26 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Calendar, DollarSign, MapPin, Sparkles } from "lucide-react";
-const SUPPORTED_CITIES = ["Agra", "Varanasi", "Lucknow", "Allahabad (Prayagraj)"] as const;
+import { Calendar, IndianRupee, MapPin, Sparkles } from "lucide-react";
+
+const SUPPORTED_DESTINATIONS = ["Agra", "Varanasi", "Lucknow", "Allahabad (Prayagraj)"] as const;
+
+const BUDGET_OPTIONS = [
+  { value: "budget", label: "Budget (₹1,500–₹3,000/day)" },
+  { value: "mid-range", label: "Mid-range (₹3,000–₹6,000/day)" },
+  { value: "premium", label: "Premium (₹6,000+/day)" },
+] as const;
 
 const tripFormSchema = z.object({
   origin: z
     .string()
     .trim()
-    .min(1, "Origin city is required"),
+    .min(1, "Origin city is required")
+    .max(200, "Origin must be less than 200 characters"),
   destination: z
     .string()
     .trim()
-    .min(1, "Destination is required")
-    .max(200, "Destination must be less than 200 characters"),
+    .min(1, "Destination is required"),
   startDate: z
     .string()
     .min(1, "Start date is required")
@@ -30,7 +37,6 @@ const tripFormSchema = z.object({
     .refine((date) => !isNaN(Date.parse(date)), "Invalid end date"),
   budget: z
     .string()
-    .max(100, "Budget must be less than 100 characters")
     .optional()
     .or(z.literal("")),
   preferences: z
@@ -97,21 +103,11 @@ export const TripPlannerForm = ({ onSubmit, isLoading }: TripPlannerFormProps): 
               <MapPin className="w-5 h-5 text-primary" />
               From (Origin)
             </Label>
-            <Controller
-              name="origin"
-              control={control}
-              render={({ field }) => (
-                <Select value={field.value} onValueChange={field.onChange}>
-                  <SelectTrigger className="h-12 text-base border-2 focus:border-primary focus:ring-4 focus:ring-primary/20 transition-all duration-300 rounded-xl">
-                    <SelectValue placeholder="Select origin city" />
-                  </SelectTrigger>
-                  <SelectContent className="max-h-60">
-                    {SUPPORTED_CITIES.map(city => (
-                      <SelectItem key={city} value={city}>{city}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              )}
+            <Input
+              id="origin"
+              placeholder="Enter your city (e.g., Delhi, Mumbai, Kanpur...)"
+              {...register("origin")}
+              className="h-12 text-base border-2 focus:border-primary focus:ring-4 focus:ring-primary/20 transition-all duration-300 rounded-xl"
             />
             {errors.origin && (
               <p className="text-sm text-destructive">{errors.origin.message}</p>
@@ -132,7 +128,7 @@ export const TripPlannerForm = ({ onSubmit, isLoading }: TripPlannerFormProps): 
                     <SelectValue placeholder="Select destination city" />
                   </SelectTrigger>
                   <SelectContent className="max-h-60">
-                    {SUPPORTED_CITIES.map(city => (
+                    {SUPPORTED_DESTINATIONS.map(city => (
                       <SelectItem key={city} value={city}>{city}</SelectItem>
                     ))}
                   </SelectContent>
@@ -181,14 +177,24 @@ export const TripPlannerForm = ({ onSubmit, isLoading }: TripPlannerFormProps): 
 
         <div className="space-y-3">
           <Label htmlFor="budget" className="flex items-center gap-2 text-base font-semibold">
-            <DollarSign className="w-5 h-5 text-primary" />
-            Budget (optional)
+            <IndianRupee className="w-5 h-5 text-primary" />
+            Budget Level (optional)
           </Label>
-          <Input
-            id="budget"
-            placeholder="e.g., $2000"
-            {...register("budget")}
-            className="h-12 text-base border-2 focus:border-primary focus:ring-4 focus:ring-primary/20 transition-all duration-300 rounded-xl"
+          <Controller
+            name="budget"
+            control={control}
+            render={({ field }) => (
+              <Select value={field.value} onValueChange={field.onChange}>
+                <SelectTrigger className="h-12 text-base border-2 focus:border-primary focus:ring-4 focus:ring-primary/20 transition-all duration-300 rounded-xl">
+                  <SelectValue placeholder="Select budget level" />
+                </SelectTrigger>
+                <SelectContent>
+                  {BUDGET_OPTIONS.map(opt => (
+                    <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            )}
           />
           {errors.budget && (
             <p className="text-sm text-destructive">{errors.budget.message}</p>

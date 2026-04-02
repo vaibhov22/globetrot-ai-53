@@ -1,6 +1,6 @@
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Calendar, MapPin, Save, Train, Bus, ArrowRight, Clock, IndianRupee } from "lucide-react";
+import { Calendar, MapPin, Save, Train, Bus, ArrowRight, Clock, IndianRupee, Wallet } from "lucide-react";
 import { TRANSPORT_ROUTES } from "@/data/upCities";
 import { FoodSection } from "@/components/FoodSection";
 import { OptionalActivities } from "@/components/OptionalActivities";
@@ -11,8 +11,39 @@ interface ItineraryDisplayProps {
   destination: string;
   startDate: string;
   endDate: string;
+  budget?: string;
   onSave: () => void;
   isSaving: boolean;
+}
+
+const BUDGET_RANGES: Record<string, { low: number; high: number }> = {
+  "budget": { low: 1500, high: 3000 },
+  "mid-range": { low: 3000, high: 6000 },
+  "premium": { low: 6000, high: 15000 },
+};
+
+function getBudgetEstimate(budgetLevel: string | undefined, startDate: string, endDate: string) {
+  const start = new Date(startDate);
+  const end = new Date(endDate);
+  const days = Math.max(1, Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)) + 1);
+  
+  if (!budgetLevel || !BUDGET_RANGES[budgetLevel]) {
+    // Default mid-range
+    return {
+      days,
+      low: `₹${(days * 1500).toLocaleString("en-IN")}`,
+      mid: `₹${(days * 4500).toLocaleString("en-IN")}`,
+      high: `₹${(days * 10000).toLocaleString("en-IN")}`,
+    };
+  }
+  
+  const range = BUDGET_RANGES[budgetLevel];
+  return {
+    days,
+    low: `₹${(days * range.low).toLocaleString("en-IN")}`,
+    mid: `₹${(days * Math.round((range.low + range.high) / 2)).toLocaleString("en-IN")}`,
+    high: `₹${(days * range.high).toLocaleString("en-IN")}`,
+  };
 }
 
 export const ItineraryDisplay = ({ 
@@ -21,6 +52,7 @@ export const ItineraryDisplay = ({
   destination, 
   startDate, 
   endDate, 
+  budget,
   onSave, 
   isSaving 
 }: ItineraryDisplayProps) => {
@@ -32,6 +64,7 @@ export const ItineraryDisplay = ({
 
   const trainRoutes = routes.filter((r) => r.type === "train");
   const busRoutes = routes.filter((r) => r.type === "bus");
+  const budgetEst = getBudgetEstimate(budget, startDate, endDate);
 
   return (
     <Card className="p-10 bg-[var(--gradient-card)] shadow-[var(--shadow-xl)] border-2 border-border/50 rounded-2xl animate-fade-in-scale backdrop-blur-sm">
@@ -59,6 +92,28 @@ export const ItineraryDisplay = ({
           <Save className="w-5 h-5 mr-2 group-hover:rotate-12 transition-transform duration-300" />
           {isSaving ? "Saving..." : "Save Trip"}
         </Button>
+      </div>
+
+      {/* Budget Estimate */}
+      <div className="mb-8 p-6 bg-gradient-to-br from-primary/5 to-accent/5 rounded-2xl border-2 border-primary/20">
+        <h3 className="text-2xl font-bold text-foreground flex items-center gap-2 mb-4">
+          <Wallet className="w-6 h-6 text-primary" />
+          Estimated Budget ({budgetEst.days} days)
+        </h3>
+        <div className="grid grid-cols-3 gap-4">
+          <div className="text-center p-4 bg-card rounded-xl border border-border/50">
+            <p className="text-sm text-muted-foreground font-medium mb-1">Budget</p>
+            <p className="text-xl font-bold text-green-600">{budgetEst.low}</p>
+          </div>
+          <div className="text-center p-4 bg-card rounded-xl border-2 border-primary/30">
+            <p className="text-sm text-muted-foreground font-medium mb-1">Mid-range</p>
+            <p className="text-xl font-bold text-primary">{budgetEst.mid}</p>
+          </div>
+          <div className="text-center p-4 bg-card rounded-xl border border-border/50">
+            <p className="text-sm text-muted-foreground font-medium mb-1">Premium</p>
+            <p className="text-xl font-bold text-accent">{budgetEst.high}</p>
+          </div>
+        </div>
       </div>
 
       <div className="prose prose-slate max-w-none">
@@ -126,6 +181,10 @@ export const ItineraryDisplay = ({
                     <div>
                       <p className="font-bold text-foreground">{route.trainName} <span className="text-muted-foreground text-sm">#{route.trainNumber}</span></p>
                       <p className="text-sm text-muted-foreground">{route.from} → {route.to}</p>
+                      <p className="text-xs text-primary font-medium mt-1">
+                        <Calendar className="w-3 h-3 inline mr-1" />
+                        {new Date(startDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
+                      </p>
                     </div>
                     <div className="flex items-center gap-4 text-sm">
                       <span className="flex items-center gap-1 text-muted-foreground"><Clock className="w-4 h-4" />{route.duration}</span>
