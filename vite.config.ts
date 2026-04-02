@@ -15,4 +15,11 @@ export default defineConfig(({ mode }) => ({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  optimizeDeps: {
+    include: [
+      "@radix-ui/react-accordion",
+      "@radix-ui/react-tooltip",
+      "@radix-ui/react-select",
+    ],
+  },
 }));
