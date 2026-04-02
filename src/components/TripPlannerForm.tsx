@@ -7,30 +7,28 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Calendar, DollarSign, MapPin, Sparkles } from "lucide-react";
-const SUPPORTED_CITIES = ["Agra", "Varanasi", "Lucknow", "Allahabad (Prayagraj)"] as const;
+import { Calendar, IndianRupee, MapPin, Sparkles } from "lucide-react";
+
+const SUPPORTED_DESTINATIONS = ["Agra", "Varanasi", "Lucknow", "Allahabad (Prayagraj)"] as const;
+
+const BUDGET_OPTIONS = [
+  { value: "budget", label: "Budget (₹1,500–₹3,000/day)" },
+  { value: "mid-range", label: "Mid-range (₹3,000–₹6,000/day)" },
+  { value: "premium", label: "Premium (₹6,000+/day)" },
+] as const;
 
 const tripFormSchema = z.object({
   origin: z
     .string()
     .trim()
-    .min(1, "Origin city is required"),
+    .min(1, "Origin city is required")
+    .max(200, "Origin must be less than 200 characters"),
   destination: z
     .string()
     .trim()
-    .min(1, "Destination is required")
-    .max(200, "Destination must be less than 200 characters"),
-  startDate: z
-    .string()
-    .min(1, "Start date is required")
-    .refine((date) => !isNaN(Date.parse(date)), "Invalid start date"),
-  endDate: z
-    .string()
-    .min(1, "End date is required")
-    .refine((date) => !isNaN(Date.parse(date)), "Invalid end date"),
+    .min(1, "Destination is required"),
   budget: z
     .string()
-    .max(100, "Budget must be less than 100 characters")
     .optional()
     .or(z.literal("")),
   preferences: z
