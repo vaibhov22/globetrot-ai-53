@@ -8,7 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Calendar, DollarSign, MapPin, Sparkles } from "lucide-react";
-import { UP_CITIES } from "@/data/upCities";
+const SUPPORTED_CITIES = ["Agra", "Varanasi", "Lucknow", "Allahabad (Prayagraj)"] as const;
 
 const tripFormSchema = z.object({
   origin: z
