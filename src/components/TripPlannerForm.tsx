@@ -169,14 +169,24 @@ export const TripPlannerForm = ({ onSubmit, isLoading }: TripPlannerFormProps): 
 
         <div className="space-y-3">
           <Label htmlFor="budget" className="flex items-center gap-2 text-base font-semibold">
-            <DollarSign className="w-5 h-5 text-primary" />
-            Budget (optional)
+            <IndianRupee className="w-5 h-5 text-primary" />
+            Budget Level (optional)
           </Label>
-          <Input
-            id="budget"
-            placeholder="e.g., $2000"
-            {...register("budget")}
-            className="h-12 text-base border-2 focus:border-primary focus:ring-4 focus:ring-primary/20 transition-all duration-300 rounded-xl"
+          <Controller
+            name="budget"
+            control={control}
+            render={({ field }) => (
+              <Select value={field.value} onValueChange={field.onChange}>
+                <SelectTrigger className="h-12 text-base border-2 focus:border-primary focus:ring-4 focus:ring-primary/20 transition-all duration-300 rounded-xl">
+                  <SelectValue placeholder="Select budget level" />
+                </SelectTrigger>
+                <SelectContent>
+                  {BUDGET_OPTIONS.map(opt => (
+                    <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            )}
           />
           {errors.budget && (
             <p className="text-sm text-destructive">{errors.budget.message}</p>
