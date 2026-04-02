@@ -116,6 +116,7 @@ export const ItineraryDisplay = ({
         </div>
       </div>
 
+      <div className="prose prose-slate max-w-none">
         {itinerary.days && itinerary.days.length > 0 ? (
           <div className="space-y-5">
             {itinerary.days.map((day: any, index: number) => (
