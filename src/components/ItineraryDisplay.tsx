@@ -94,7 +94,28 @@ export const ItineraryDisplay = ({
         </Button>
       </div>
 
-      <div className="prose prose-slate max-w-none">
+      {/* Budget Estimate */}
+      <div className="mb-8 p-6 bg-gradient-to-br from-primary/5 to-accent/5 rounded-2xl border-2 border-primary/20">
+        <h3 className="text-2xl font-bold text-foreground flex items-center gap-2 mb-4">
+          <Wallet className="w-6 h-6 text-primary" />
+          Estimated Budget ({budgetEst.days} days)
+        </h3>
+        <div className="grid grid-cols-3 gap-4">
+          <div className="text-center p-4 bg-card rounded-xl border border-border/50">
+            <p className="text-sm text-muted-foreground font-medium mb-1">Budget</p>
+            <p className="text-xl font-bold text-green-600">{budgetEst.low}</p>
+          </div>
+          <div className="text-center p-4 bg-card rounded-xl border-2 border-primary/30">
+            <p className="text-sm text-muted-foreground font-medium mb-1">Mid-range</p>
+            <p className="text-xl font-bold text-primary">{budgetEst.mid}</p>
+          </div>
+          <div className="text-center p-4 bg-card rounded-xl border border-border/50">
+            <p className="text-sm text-muted-foreground font-medium mb-1">Premium</p>
+            <p className="text-xl font-bold text-accent">{budgetEst.high}</p>
+          </div>
+        </div>
+      </div>
+
         {itinerary.days && itinerary.days.length > 0 ? (
           <div className="space-y-5">
             {itinerary.days.map((day: any, index: number) => (
