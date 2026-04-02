@@ -161,6 +161,12 @@ export const ItineraryDisplay = ({
           )}
         </div>
       )}
+
+      {/* Food Section */}
+      <FoodSection destination={destination} />
+
+      {/* Optional Activities */}
+      <OptionalActivities destination={destination} />
     </Card>
   );
 };

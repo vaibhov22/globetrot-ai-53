@@ -132,7 +132,7 @@ export const TripPlannerForm = ({ onSubmit, isLoading }: TripPlannerFormProps): 
                     <SelectValue placeholder="Select destination city" />
                   </SelectTrigger>
                   <SelectContent className="max-h-60">
-                    {UP_CITIES.map(city => (
+                    {SUPPORTED_CITIES.map(city => (
                       <SelectItem key={city} value={city}>{city}</SelectItem>
                     ))}
                   </SelectContent>
