@@ -181,6 +181,10 @@ export const ItineraryDisplay = ({
                     <div>
                       <p className="font-bold text-foreground">{route.trainName} <span className="text-muted-foreground text-sm">#{route.trainNumber}</span></p>
                       <p className="text-sm text-muted-foreground">{route.from} → {route.to}</p>
+                      <p className="text-xs text-primary font-medium mt-1">
+                        <Calendar className="w-3 h-3 inline mr-1" />
+                        {new Date(startDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
+                      </p>
                     </div>
                     <div className="flex items-center gap-4 text-sm">
                       <span className="flex items-center gap-1 text-muted-foreground"><Clock className="w-4 h-4" />{route.duration}</span>
