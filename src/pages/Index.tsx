@@ -174,6 +174,7 @@ const Index = () => {
               destination={currentTripData.destination}
               startDate={currentTripData.startDate}
               endDate={currentTripData.endDate}
+              budget={currentTripData.budget}
               onSave={handleSaveTrip}
               isSaving={isSaving}
             />

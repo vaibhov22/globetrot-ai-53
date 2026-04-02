@@ -36,8 +36,15 @@ Always return your response as a valid JSON object with this exact structure:
   "tips": ["Tip 1", "Tip 2", "Tip 3"]
 }`;
 
+    const budgetLabels: Record<string, string> = {
+      "budget": "Budget-friendly (₹1,500–₹3,000 per day)",
+      "mid-range": "Mid-range (₹3,000–₹6,000 per day)",
+      "premium": "Premium/Luxury (₹6,000+ per day)",
+    };
+    const budgetText = budget ? budgetLabels[budget] || budget : "";
+
     const userPrompt = `Create a ${days}-day travel itinerary for ${destination} from ${startDate} to ${endDate}.
-${budget ? `Budget: ${budget}` : ""}
+${budgetText ? `Budget level: ${budgetText}` : ""}
 ${preferences ? `Preferences: ${preferences}` : ""}
 
 Include:
