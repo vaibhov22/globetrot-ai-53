@@ -27,6 +27,14 @@ const tripFormSchema = z.object({
     .string()
     .trim()
     .min(1, "Destination is required"),
+  startDate: z
+    .string()
+    .min(1, "Start date is required")
+    .refine((date) => !isNaN(Date.parse(date)), "Invalid start date"),
+  endDate: z
+    .string()
+    .min(1, "End date is required")
+    .refine((date) => !isNaN(Date.parse(date)), "Invalid end date"),
   budget: z
     .string()
     .optional()
