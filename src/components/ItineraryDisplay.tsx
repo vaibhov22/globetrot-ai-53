@@ -1,8 +1,8 @@
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Calendar, MapPin, Save, Train, Bus, ArrowRight, Clock, IndianRupee, Wallet } from "lucide-react";
-import { TRANSPORT_ROUTES } from "@/data/upCities";
+import { Calendar, MapPin, Save, ArrowRight, Wallet } from "lucide-react";
 import { FoodSection } from "@/components/FoodSection";
+import { TransportSection } from "@/components/TransportSection";
 import { OptionalActivities } from "@/components/OptionalActivities";
 import { HotelSection } from "@/components/HotelSection";
 
