@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Train, Bus, Clock, IndianRupee, Calendar, Loader2, AlertCircle } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
+
 
 interface TransportRoute {
   from: string;
