@@ -155,64 +155,8 @@ export const ItineraryDisplay = ({
         </div>
       )}
 
-      {/* Transport Routes Section */}
-      {routes.length > 0 && (
-        <div className="mt-10 space-y-6">
-          <h3 className="text-3xl font-black text-foreground flex items-center gap-3">
-            <Train className="w-8 h-8 text-primary" />
-            Transport: {origin} ↔ {destination}
-          </h3>
-
-          {trainRoutes.length > 0 && (
-            <div className="p-6 bg-gradient-to-br from-primary/5 to-primary/10 rounded-2xl border-2 border-primary/20">
-              <h4 className="text-xl font-bold text-primary mb-4 flex items-center gap-2">
-                <Train className="w-5 h-5" /> Trains
-              </h4>
-              <div className="space-y-3">
-                {trainRoutes.map((route, i) => (
-                  <div key={i} className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 p-4 bg-card rounded-xl border border-border/50 hover:shadow-md transition-all">
-                    <div>
-                      <p className="font-bold text-foreground">{route.trainName} <span className="text-muted-foreground text-sm">#{route.trainNumber}</span></p>
-                      <p className="text-sm text-muted-foreground">{route.from} → {route.to}</p>
-                      <p className="text-xs text-primary font-medium mt-1">
-                        <Calendar className="w-3 h-3 inline mr-1" />
-                        {new Date(startDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
-                      </p>
-                    </div>
-                    <div className="flex items-center gap-4 text-sm">
-                      <span className="flex items-center gap-1 text-muted-foreground"><Clock className="w-4 h-4" />{route.duration}</span>
-                      <span className="flex items-center gap-1 text-muted-foreground"><IndianRupee className="w-4 h-4" />{route.fare}</span>
-                      <span className="text-xs bg-primary/10 text-primary px-2 py-1 rounded-full font-medium">{route.frequency}</span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {busRoutes.length > 0 && (
-            <div className="p-6 bg-gradient-to-br from-accent/5 to-accent/10 rounded-2xl border-2 border-accent/20">
-              <h4 className="text-xl font-bold text-accent mb-4 flex items-center gap-2">
-                <Bus className="w-5 h-5" /> Buses
-              </h4>
-              <div className="space-y-3">
-                {busRoutes.map((route, i) => (
-                  <div key={i} className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 p-4 bg-card rounded-xl border border-border/50 hover:shadow-md transition-all">
-                    <div>
-                      <p className="font-bold text-foreground">{route.from} → {route.to}</p>
-                    </div>
-                    <div className="flex items-center gap-4 text-sm">
-                      <span className="flex items-center gap-1 text-muted-foreground"><Clock className="w-4 h-4" />{route.duration}</span>
-                      <span className="flex items-center gap-1 text-muted-foreground"><IndianRupee className="w-4 h-4" />{route.fare}</span>
-                      <span className="text-xs bg-accent/10 text-accent px-2 py-1 rounded-full font-medium">{route.frequency}</span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-        </div>
-      )}
+      {/* Transport Section (Dynamic API) */}
+      <TransportSection origin={origin} destination={destination} startDate={startDate} />
 
       {/* Hotel Section */}
       <HotelSection destination={destination} />
