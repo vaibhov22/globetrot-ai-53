@@ -9,7 +9,7 @@ import { Card } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Calendar, IndianRupee, MapPin, Sparkles } from "lucide-react";
 
-const SUPPORTED_DESTINATIONS = ["Agra", "Varanasi", "Lucknow", "Allahabad (Prayagraj)"] as const;
+const SUPPORTED_CITIES = ["Agra", "Varanasi", "Lucknow", "Prayagraj"] as const;
 
 const BUDGET_OPTIONS = [
   { value: "budget", label: "Budget (₹1,500–₹3,000/day)" },
@@ -103,11 +103,21 @@ export const TripPlannerForm = ({ onSubmit, isLoading }: TripPlannerFormProps): 
               <MapPin className="w-5 h-5 text-primary" />
               From (Origin)
             </Label>
-            <Input
-              id="origin"
-              placeholder="Enter your city (e.g., Delhi, Mumbai, Kanpur...)"
-              {...register("origin")}
-              className="h-12 text-base border-2 focus:border-primary focus:ring-4 focus:ring-primary/20 transition-all duration-300 rounded-xl"
+            <Controller
+              name="origin"
+              control={control}
+              render={({ field }) => (
+                <Select value={field.value} onValueChange={field.onChange}>
+                  <SelectTrigger className="h-12 text-base border-2 focus:border-primary focus:ring-4 focus:ring-primary/20 transition-all duration-300 rounded-xl">
+                    <SelectValue placeholder="Select origin city" />
+                  </SelectTrigger>
+                  <SelectContent className="max-h-60">
+                    {SUPPORTED_CITIES.map(city => (
+                      <SelectItem key={city} value={city}>{city}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              )}
             />
             {errors.origin && (
               <p className="text-sm text-destructive">{errors.origin.message}</p>
@@ -128,7 +138,7 @@ export const TripPlannerForm = ({ onSubmit, isLoading }: TripPlannerFormProps): 
                     <SelectValue placeholder="Select destination city" />
                   </SelectTrigger>
                   <SelectContent className="max-h-60">
-                    {SUPPORTED_DESTINATIONS.map(city => (
+                    {SUPPORTED_CITIES.map(city => (
                       <SelectItem key={city} value={city}>{city}</SelectItem>
                     ))}
                   </SelectContent>
