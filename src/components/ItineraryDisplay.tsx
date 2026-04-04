@@ -57,14 +57,6 @@ export const ItineraryDisplay = ({
   onSave, 
   isSaving 
 }: ItineraryDisplayProps) => {
-  const routes = TRANSPORT_ROUTES.filter(
-    (r) =>
-      (r.from.toLowerCase() === origin.toLowerCase() && r.to.toLowerCase() === destination.toLowerCase()) ||
-      (r.from.toLowerCase() === destination.toLowerCase() && r.to.toLowerCase() === origin.toLowerCase())
-  );
-
-  const trainRoutes = routes.filter((r) => r.type === "train");
-  const busRoutes = routes.filter((r) => r.type === "bus");
   const budgetEst = getBudgetEstimate(budget, startDate, endDate);
 
   return (
