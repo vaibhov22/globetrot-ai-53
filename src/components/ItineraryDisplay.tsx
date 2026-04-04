@@ -4,6 +4,7 @@ import { Calendar, MapPin, Save, Train, Bus, ArrowRight, Clock, IndianRupee, Wal
 import { TRANSPORT_ROUTES } from "@/data/upCities";
 import { FoodSection } from "@/components/FoodSection";
 import { OptionalActivities } from "@/components/OptionalActivities";
+import { HotelSection } from "@/components/HotelSection";
 
 interface ItineraryDisplayProps {
   itinerary: any;
