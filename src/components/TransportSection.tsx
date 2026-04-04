@@ -31,15 +31,6 @@ export const TransportSection = ({ origin, destination, startDate }: TransportSe
       setLoading(true);
       setError(null);
       try {
-        const { data, error: fnError } = await supabase.functions.invoke("get-trains", {
-          method: "GET",
-          headers: { "Content-Type": "application/json" },
-          body: null,
-        });
-
-        // supabase.functions.invoke doesn't support query params for GET well,
-        // so we use a direct fetch instead
-        const projectId = import.meta.env.VITE_SUPABASE_PROJECT_ID;
         const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
         const anonKey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
 
