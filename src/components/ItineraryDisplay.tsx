@@ -222,6 +222,9 @@ export const ItineraryDisplay = ({
         </div>
       )}
 
+      {/* Hotel Section */}
+      <HotelSection destination={destination} />
+
       {/* Food Section */}
       <FoodSection destination={destination} />
 
