@@ -44,7 +44,7 @@ export const CITY_OPTIONAL_ACTIVITIES: CityOptionalActivities[] = [
     ],
   },
   {
-    city: "Allahabad (Prayagraj)",
+    city: "Prayagraj",
     activities: [
       { title: "Anand Bhawan Museum", description: "Nehru family's ancestral home turned museum — fascinating political history exhibits", type: "hidden-gem" },
       { title: "Khusro Bagh", description: "Walled Mughal garden with three stunning sandstone tombs, often empty of tourists", type: "hidden-gem" },

@@ -52,7 +52,7 @@ export const CITY_FOOD_DATA: CityFood[] = [
     ],
   },
   {
-    city: "Allahabad (Prayagraj)",
+    city: "Prayagraj",
     items: [
       { dish: "Kachori Sabzi", place: "Netram", address: "Katra, Prayagraj", description: "Famous crispy kachori with spicy potato curry since 1865", type: "veg" },
       { dish: "Samosa", place: "Loknath Ki Galliyan Chaat", address: "Civil Lines, Prayagraj", description: "Crispy samosas with tangy chutney and spices", type: "veg" },
