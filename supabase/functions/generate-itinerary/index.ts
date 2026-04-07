@@ -104,8 +104,37 @@ Return ONLY valid JSON with no markdown formatting or code blocks.`;
     console.log("AI response received");
     
     let itinerary = data.choices[0].message.content;
-    itinerary = itinerary.replace(/```json\n?/g, "").replace(/```\n?/g, "").trim();
-    const parsedItinerary = JSON.parse(itinerary);
+    
+    // Clean up markdown code blocks
+    itinerary = itinerary.replace(/```json\s*/gi, "").replace(/```\s*/g, "").trim();
+
+    // Find JSON boundaries
+    const jsonStart = itinerary.search(/[\{\[]/);
+    const jsonEnd = itinerary.lastIndexOf(jsonStart !== -1 && itinerary[jsonStart] === '[' ? ']' : '}');
+    if (jsonStart === -1 || jsonEnd === -1) throw new Error("No JSON found in AI response");
+    itinerary = itinerary.substring(jsonStart, jsonEnd + 1);
+
+    // Remove control characters and fix common issues
+    itinerary = itinerary
+      .replace(/[\x00-\x1F\x7F]/g, " ")  // control chars → space
+      .replace(/,\s*}/g, "}")              // trailing commas
+      .replace(/,\s*]/g, "]");             // trailing commas
+
+    let parsedItinerary;
+    try {
+      parsedItinerary = JSON.parse(itinerary);
+    } catch {
+      // Try repairing unbalanced braces/brackets
+      let braces = 0, brackets = 0;
+      for (const c of itinerary) {
+        if (c === '{') braces++; if (c === '}') braces--;
+        if (c === '[') brackets++; if (c === ']') brackets--;
+      }
+      let repaired = itinerary;
+      while (brackets > 0) { repaired += ']'; brackets--; }
+      while (braces > 0) { repaired += '}'; braces--; }
+      parsedItinerary = JSON.parse(repaired);
+    }
 
     return new Response(JSON.stringify({ itinerary: parsedItinerary }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
