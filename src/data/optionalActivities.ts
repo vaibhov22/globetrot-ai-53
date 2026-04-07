@@ -54,4 +54,15 @@ export const CITY_OPTIONAL_ACTIVITIES: CityOptionalActivities[] = [
       { title: "Chandrasekhar Azad Park", description: "Historic park where freedom fighter Azad made his last stand — beautiful for evening walks", type: "alternative" },
     ],
   },
+  {
+    city: "Ayodhya",
+    activities: [
+      { title: "Saryu River Evening Aarti", description: "Beautiful lamp-lit ceremony on the banks of Saryu River, similar to Varanasi's Ganga Aarti", type: "alternative" },
+      { title: "Gulab Bari Gardens", description: "Nawabi-era rose garden with beautiful Mughal tombs — a hidden peaceful spot", type: "hidden-gem" },
+      { title: "Treta Ke Thakur Temple", description: "Ancient temple where Lord Ram performed Ashwamedha Yagna — fewer tourists", type: "hidden-gem" },
+      { title: "Ayodhya Heritage Walk", description: "Walk through ancient lanes discovering temples, ghats, and local culture", type: "alternative" },
+      { title: "Bahu Begum Ka Maqbara", description: "Grand Mughal tomb with fine architecture — one of the largest in UP", type: "hidden-gem" },
+      { title: "Guptar Ghat Meditation", description: "Peaceful ghat where Lord Ram is believed to have taken Jal Samadhi — great for quiet reflection", type: "adventure" },
+    ],
+  },
 ];

@@ -50,4 +50,14 @@ export const CITY_HOTELS: CityHotels[] = [
       { name: "Zostel Prayagraj", area: "Lukerganj", pricePerNight: 600 },
     ],
   },
+  {
+    city: "Ayodhya",
+    hotels: [
+      { name: "Ramayan Hotel", area: "Near Ram Janmabhoomi", pricePerNight: 2500 },
+      { name: "Hotel Saket", area: "Faizabad Road", pricePerNight: 1800 },
+      { name: "Srijan Grand", area: "Civil Lines", pricePerNight: 3500 },
+      { name: "Rahi Tourist Bungalow", area: "Near Saryu Ghat", pricePerNight: 1200 },
+      { name: "Ayodhya Divine Retreat", area: "Near Hanuman Garhi", pricePerNight: 4500 },
+    ],
+  },
 ];

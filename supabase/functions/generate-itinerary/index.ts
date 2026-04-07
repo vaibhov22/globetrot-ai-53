@@ -11,19 +11,18 @@ serve(async (req) => {
   }
 
   try {
-    const { destination, startDate, endDate, budget, preferences } = await req.json();
+    const { destination, startDate, endDate, budget, preferences, origin, selectedPlaces } = await req.json();
     
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) {
       throw new Error("LOVABLE_API_KEY is not configured");
     }
 
-    // Calculate number of days
     const start = new Date(startDate);
     const end = new Date(endDate);
     const days = Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)) + 1;
 
-    const systemPrompt = `You are an expert travel planner. Create detailed, personalized travel itineraries that are practical and exciting. 
+    const systemPrompt = `You are an expert travel planner specializing in Uttar Pradesh, India. Create detailed, personalized travel itineraries that are practical and exciting. 
 Always return your response as a valid JSON object with this exact structure:
 {
   "days": [
@@ -43,16 +42,22 @@ Always return your response as a valid JSON object with this exact structure:
     };
     const budgetText = budget ? budgetLabels[budget] || budget : "";
 
-    const userPrompt = `Create a ${days}-day travel itinerary for ${destination} from ${startDate} to ${endDate}.
+    const placesText = selectedPlaces && selectedPlaces.length > 0
+      ? `Use ONLY these selected places: ${selectedPlaces.join(", ")}.`
+      : "";
+
+    const userPrompt = `Plan a ${days}-day trip from ${origin || "origin"} to ${destination} starting ${startDate} to ${endDate}.
 ${budgetText ? `Budget level: ${budgetText}` : ""}
+${placesText}
 ${preferences ? `Preferences: ${preferences}` : ""}
 
-Include:
-- Daily activities with specific recommendations
-- Best times to visit attractions
-- Local food recommendations
-- Transportation tips
-- Cultural insights
+Generate a practical day-wise itinerary. Include:
+- Daily activities with specific recommendations using the selected places
+- Travel flow between places
+- Best times to visit each attraction
+- Local food recommendations (e.g. Prayagraj: Kachori, Jalebi; Varanasi: Paan, Chaat; Agra: Petha, Mughlai; Ayodhya: Sattvik meals)
+- Cost estimate per day
+- Transportation tips between places
 
 Return ONLY valid JSON with no markdown formatting or code blocks.`;
 
@@ -99,11 +104,7 @@ Return ONLY valid JSON with no markdown formatting or code blocks.`;
     console.log("AI response received");
     
     let itinerary = data.choices[0].message.content;
-    
-    // Clean up any markdown code blocks
     itinerary = itinerary.replace(/```json\n?/g, "").replace(/```\n?/g, "").trim();
-    
-    // Parse the JSON response
     const parsedItinerary = JSON.parse(itinerary);
 
     return new Response(JSON.stringify({ itinerary: parsedItinerary }), {
