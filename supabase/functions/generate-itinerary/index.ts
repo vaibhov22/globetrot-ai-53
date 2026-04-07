@@ -11,7 +11,7 @@ serve(async (req) => {
   }
 
   try {
-    const { destination, startDate, endDate, budget, preferences, origin, selectedPlaces } = await req.json();
+    const { destination, startDate, endDate, budget, preferences, origin, selectedPlaces, remainingPlaces } = await req.json();
     
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) {
