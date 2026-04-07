@@ -43,12 +43,17 @@ Always return your response as a valid JSON object with this exact structure:
     const budgetText = budget ? budgetLabels[budget] || budget : "";
 
     const placesText = selectedPlaces && selectedPlaces.length > 0
-      ? `Use ONLY these selected places: ${selectedPlaces.join(", ")}.`
+      ? `Use these selected places as the MAIN itinerary: ${selectedPlaces.join(", ")}.`
+      : "";
+
+    const remainingText = remainingPlaces && remainingPlaces.length > 0
+      ? `Include these as optional suggestions (not in main itinerary): ${remainingPlaces.join(", ")}.`
       : "";
 
     const userPrompt = `Plan a ${days}-day trip from ${origin || "origin"} to ${destination} starting ${startDate} to ${endDate}.
 ${budgetText ? `Budget level: ${budgetText}` : ""}
 ${placesText}
+${remainingText}
 ${preferences ? `Preferences: ${preferences}` : ""}
 
 Generate a practical day-wise itinerary. Include:
@@ -58,6 +63,7 @@ Generate a practical day-wise itinerary. Include:
 - Local food recommendations (e.g. Prayagraj: Kachori, Jalebi; Varanasi: Paan, Chaat; Agra: Petha, Mughlai; Ayodhya: Sattvik meals)
 - Cost estimate per day
 - Transportation tips between places
+- An "optional_places" array with the remaining places as brief suggestions
 
 Return ONLY valid JSON with no markdown formatting or code blocks.`;
 
