@@ -11,7 +11,7 @@ serve(async (req) => {
   }
 
   try {
-    const { destination, startDate, endDate, budget, preferences, origin, selectedPlaces } = await req.json();
+    const { destination, startDate, endDate, budget, preferences, origin, selectedPlaces, remainingPlaces } = await req.json();
     
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) {
@@ -32,7 +32,8 @@ Always return your response as a valid JSON object with this exact structure:
       "activities": ["Activity 1", "Activity 2", "Activity 3"]
     }
   ],
-  "tips": ["Tip 1", "Tip 2", "Tip 3"]
+  "tips": ["Tip 1", "Tip 2", "Tip 3"],
+  "optional_places": ["Place 1 - brief suggestion", "Place 2 - brief suggestion"]
 }`;
 
     const budgetLabels: Record<string, string> = {
@@ -43,12 +44,17 @@ Always return your response as a valid JSON object with this exact structure:
     const budgetText = budget ? budgetLabels[budget] || budget : "";
 
     const placesText = selectedPlaces && selectedPlaces.length > 0
-      ? `Use ONLY these selected places: ${selectedPlaces.join(", ")}.`
+      ? `Use these selected places as the MAIN itinerary: ${selectedPlaces.join(", ")}.`
+      : "";
+
+    const remainingText = remainingPlaces && remainingPlaces.length > 0
+      ? `Include these as optional suggestions (not in main itinerary): ${remainingPlaces.join(", ")}.`
       : "";
 
     const userPrompt = `Plan a ${days}-day trip from ${origin || "origin"} to ${destination} starting ${startDate} to ${endDate}.
 ${budgetText ? `Budget level: ${budgetText}` : ""}
 ${placesText}
+${remainingText}
 ${preferences ? `Preferences: ${preferences}` : ""}
 
 Generate a practical day-wise itinerary. Include:
@@ -58,6 +64,7 @@ Generate a practical day-wise itinerary. Include:
 - Local food recommendations (e.g. Prayagraj: Kachori, Jalebi; Varanasi: Paan, Chaat; Agra: Petha, Mughlai; Ayodhya: Sattvik meals)
 - Cost estimate per day
 - Transportation tips between places
+- An "optional_places" array with the remaining places as brief suggestions
 
 Return ONLY valid JSON with no markdown formatting or code blocks.`;
 
