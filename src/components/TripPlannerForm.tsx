@@ -9,7 +9,7 @@ import { Card } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Calendar, IndianRupee, MapPin, Sparkles } from "lucide-react";
 
-const SUPPORTED_CITIES = ["Agra", "Varanasi", "Lucknow", "Prayagraj"] as const;
+const SUPPORTED_CITIES = ["Agra", "Varanasi", "Lucknow", "Prayagraj", "Ayodhya"] as const;
 
 const BUDGET_OPTIONS = [
   { value: "budget", label: "Budget (₹1,500–₹3,000/day)" },

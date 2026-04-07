@@ -2,18 +2,22 @@ import { useState, useEffect, useRef } from "react";
 import { Hero } from "@/components/Hero";
 import { Navbar } from "@/components/Navbar";
 import { TripPlannerForm, TripFormData } from "@/components/TripPlannerForm";
+import { PlaceSelection } from "@/components/PlaceSelection";
 import { ItineraryDisplay } from "@/components/ItineraryDisplay";
 import { AuthForm } from "@/components/AuthForm";
 import { MyTrips } from "@/components/MyTrips";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { Place } from "@/data/cityPlaces";
 
 type View = "home" | "auth" | "mytrips";
+type Step = "form" | "places" | "itinerary";
 
 const Index = () => {
   const [view, setView] = useState<View>("home");
   const [authMode, setAuthMode] = useState<"login" | "signup">("login");
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [step, setStep] = useState<Step>("form");
   const [itinerary, setItinerary] = useState<any>(null);
   const [isGenerating, setIsGenerating] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
@@ -38,7 +42,7 @@ const Index = () => {
     plannerRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
-  const handleGenerateItinerary = async (formData: TripFormData) => {
+  const handleFormSubmit = (formData: TripFormData) => {
     if (!isAuthenticated) {
       toast({
         title: "Authentication required",
@@ -47,24 +51,34 @@ const Index = () => {
       setView("auth");
       return;
     }
+    setCurrentTripData(formData);
+    setItinerary(null);
+    setStep("places");
+    setTimeout(() => plannerRef.current?.scrollIntoView({ behavior: "smooth" }), 100);
+  };
+
+  const handlePlacesConfirm = async (selectedPlaces: Place[]) => {
+    if (!currentTripData) return;
 
     setIsGenerating(true);
-    setCurrentTripData(formData);
 
     try {
       const { data, error } = await supabase.functions.invoke("generate-itinerary", {
         body: {
-          destination: formData.destination,
-          startDate: formData.startDate,
-          endDate: formData.endDate,
-          budget: formData.budget,
-          preferences: formData.preferences,
+          destination: currentTripData.destination,
+          startDate: currentTripData.startDate,
+          endDate: currentTripData.endDate,
+          budget: currentTripData.budget,
+          preferences: currentTripData.preferences,
+          origin: currentTripData.origin,
+          selectedPlaces: selectedPlaces.map((p) => p.name),
         },
       });
 
       if (error) throw error;
-      
+
       setItinerary(data.itinerary);
+      setStep("itinerary");
       toast({
         title: "Itinerary generated!",
         description: "Your personalized trip plan is ready.",
@@ -162,12 +176,23 @@ const Index = () => {
 
       <section className="py-16 px-4" ref={plannerRef}>
         <div className="container mx-auto max-w-4xl space-y-8">
-          <TripPlannerForm
-            onSubmit={handleGenerateItinerary}
-            isLoading={isGenerating}
-          />
+          {step === "form" && (
+            <TripPlannerForm
+              onSubmit={handleFormSubmit}
+              isLoading={false}
+            />
+          )}
 
-          {itinerary && currentTripData && (
+          {step === "places" && currentTripData && (
+            <PlaceSelection
+              destination={currentTripData.destination}
+              onConfirm={handlePlacesConfirm}
+              onBack={() => setStep("form")}
+              isLoading={isGenerating}
+            />
+          )}
+
+          {step === "itinerary" && itinerary && currentTripData && (
             <ItineraryDisplay
               itinerary={itinerary}
               origin={currentTripData.origin}
