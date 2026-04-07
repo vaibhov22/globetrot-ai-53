@@ -63,4 +63,16 @@ export const CITY_FOOD_DATA: CityFood[] = [
       { dish: "Biryani", place: "Nawab Sahab Restaurant", address: "Mutthiganj, Prayagraj", description: "Hyderabadi-style dum biryani popular among locals", type: "non-veg" },
     ],
   },
+  {
+    city: "Ayodhya",
+    items: [
+      { dish: "Kachori Sabzi", place: "Ram Janaki Bhojanalaya", address: "Near Hanuman Garhi, Ayodhya", description: "Traditional crispy kachori with spicy potato curry", type: "veg" },
+      { dish: "Jalebi", place: "Shri Ram Mishthan Bhandar", address: "Naya Ghat Road, Ayodhya", description: "Hot crispy jalebis — a must-try after temple visit", type: "veg" },
+      { dish: "Sattvik Thali", place: "Janaki Mahal Restaurant", address: "Near Ram Janmabhoomi, Ayodhya", description: "Pure vegetarian thali with dal, sabzi, roti, rice, and sweets", type: "veg" },
+      { dish: "Peda & Laddoo", place: "Ayodhya Prasad Bhandar", address: "Hanuman Garhi Market, Ayodhya", description: "Temple-style sweets made with pure ghee and milk", type: "veg" },
+      { dish: "Lassi", place: "Saryu Ghat Stalls", address: "Near Saryu River, Ayodhya", description: "Thick creamy lassi served in clay cups", type: "veg" },
+      { dish: "Chaat", place: "Gali Chaat Corner", address: "Near Kanak Bhawan, Ayodhya", description: "Papdi chaat, gol gappe, and aloo tikki — evening favorites", type: "veg" },
+      { dish: "Poori Sabzi", place: "Bhojanalaya Near Dashrath Mahal", address: "Dashrath Mahal Road, Ayodhya", description: "Fluffy pooris with aloo sabzi, a pilgrim breakfast staple", type: "veg" },
+    ],
+  },
 ];
