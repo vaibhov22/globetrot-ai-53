@@ -32,7 +32,8 @@ Always return your response as a valid JSON object with this exact structure:
       "activities": ["Activity 1", "Activity 2", "Activity 3"]
     }
   ],
-  "tips": ["Tip 1", "Tip 2", "Tip 3"]
+  "tips": ["Tip 1", "Tip 2", "Tip 3"],
+  "optional_places": ["Place 1 - brief suggestion", "Place 2 - brief suggestion"]
 }`;
 
     const budgetLabels: Record<string, string> = {
