@@ -4,11 +4,13 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { Compass, Gem, Route, Mountain } from "lucide-react";
+import { Compass, Gem, Route, Mountain, MapPin } from "lucide-react";
 import { CITY_OPTIONAL_ACTIVITIES } from "@/data/optionalActivities";
 
 interface OptionalActivitiesProps {
   destination: string;
+  remainingPlaces?: string[];
+  aiOptionalPlaces?: string[];
 }
 
 const typeConfig = {
@@ -17,12 +19,16 @@ const typeConfig = {
   adventure: { icon: Mountain, label: "Adventure", color: "text-emerald-500 bg-emerald-500/10 border-emerald-500/20" },
 };
 
-export const OptionalActivities = ({ destination }: OptionalActivitiesProps) => {
+export const OptionalActivities = ({ destination, remainingPlaces, aiOptionalPlaces }: OptionalActivitiesProps) => {
   const cityData = CITY_OPTIONAL_ACTIVITIES.find(
     (c) => c.city.toLowerCase() === destination.toLowerCase()
   );
 
-  if (!cityData) return null;
+  const hasRemainingPlaces = remainingPlaces && remainingPlaces.length > 0;
+  const hasAiOptional = aiOptionalPlaces && aiOptionalPlaces.length > 0;
+  const hasCuratedData = !!cityData;
+
+  if (!hasRemainingPlaces && !hasAiOptional && !hasCuratedData) return null;
 
   return (
     <div className="mt-10">
@@ -37,39 +43,108 @@ export const OptionalActivities = ({ destination }: OptionalActivitiesProps) => 
             </div>
           </AccordionTrigger>
           <AccordionContent>
-            <div className="px-6 pb-6 pt-2 space-y-3">
-              <p className="text-muted-foreground mb-4">
+            <div className="px-6 pb-6 pt-2 space-y-6">
+              <p className="text-muted-foreground">
                 Extra places and activities not in your main itinerary — explore at your own pace!
               </p>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {cityData.activities.map((activity, i) => {
-                  const config = typeConfig[activity.type];
-                  const Icon = config.icon;
-                  return (
-                    <div
-                      key={i}
-                      className="p-4 rounded-xl border border-border/50 hover:shadow-md transition-all duration-300 hover:border-primary/30 group"
-                    >
-                      <div className="flex items-start gap-3">
-                        <div className={`p-2 rounded-lg border ${config.color} shrink-0`}>
-                          <Icon className="w-4 h-4" />
-                        </div>
-                        <div className="space-y-1">
-                          <h4 className="font-bold text-foreground group-hover:text-primary transition-colors">
-                            {activity.title}
-                          </h4>
-                          <p className="text-sm text-muted-foreground">
-                            {activity.description}
-                          </p>
-                          <span className={`inline-block text-xs px-2 py-0.5 rounded-full font-medium border ${config.color}`}>
-                            {config.label}
-                          </span>
+
+              {/* Remaining unselected places */}
+              {hasRemainingPlaces && (
+                <div>
+                  <h4 className="text-lg font-bold text-foreground mb-3 flex items-center gap-2">
+                    <MapPin className="w-5 h-5 text-primary" />
+                    Places You Didn't Select ({remainingPlaces.length})
+                  </h4>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    {remainingPlaces.map((place, i) => (
+                      <div
+                        key={i}
+                        className="p-4 rounded-xl border border-border/50 hover:shadow-md transition-all duration-300 hover:border-primary/30 group"
+                      >
+                        <div className="flex items-start gap-3">
+                          <div className="p-2 rounded-lg border text-violet-500 bg-violet-500/10 border-violet-500/20 shrink-0">
+                            <MapPin className="w-4 h-4" />
+                          </div>
+                          <div>
+                            <h4 className="font-bold text-foreground group-hover:text-primary transition-colors">
+                              {place}
+                            </h4>
+                            <span className="inline-block text-xs px-2 py-0.5 rounded-full font-medium border text-violet-500 bg-violet-500/10 border-violet-500/20 mt-1">
+                              Not Selected
+                            </span>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  );
-                })}
-              </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* AI-generated optional suggestions */}
+              {hasAiOptional && (
+                <div>
+                  <h4 className="text-lg font-bold text-foreground mb-3 flex items-center gap-2">
+                    <Gem className="w-5 h-5 text-amber-500" />
+                    AI Suggestions
+                  </h4>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    {aiOptionalPlaces.map((place, i) => (
+                      <div
+                        key={i}
+                        className="p-4 rounded-xl border border-border/50 hover:shadow-md transition-all duration-300 hover:border-primary/30 group"
+                      >
+                        <div className="flex items-start gap-3">
+                          <div className="p-2 rounded-lg border text-amber-500 bg-amber-500/10 border-amber-500/20 shrink-0">
+                            <Gem className="w-4 h-4" />
+                          </div>
+                          <p className="font-medium text-foreground group-hover:text-primary transition-colors">
+                            {place}
+                          </p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Curated hidden gems */}
+              {hasCuratedData && (
+                <div>
+                  <h4 className="text-lg font-bold text-foreground mb-3 flex items-center gap-2">
+                    <Mountain className="w-5 h-5 text-emerald-500" />
+                    Curated Hidden Gems
+                  </h4>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {cityData.activities.map((activity, i) => {
+                      const config = typeConfig[activity.type];
+                      const Icon = config.icon;
+                      return (
+                        <div
+                          key={i}
+                          className="p-4 rounded-xl border border-border/50 hover:shadow-md transition-all duration-300 hover:border-primary/30 group"
+                        >
+                          <div className="flex items-start gap-3">
+                            <div className={`p-2 rounded-lg border ${config.color} shrink-0`}>
+                              <Icon className="w-4 h-4" />
+                            </div>
+                            <div className="space-y-1">
+                              <h4 className="font-bold text-foreground group-hover:text-primary transition-colors">
+                                {activity.title}
+                              </h4>
+                              <p className="text-sm text-muted-foreground">
+                                {activity.description}
+                              </p>
+                              <span className={`inline-block text-xs px-2 py-0.5 rounded-full font-medium border ${config.color}`}>
+                                {config.label}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
             </div>
           </AccordionContent>
         </AccordionItem>
