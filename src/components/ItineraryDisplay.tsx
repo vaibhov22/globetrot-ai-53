@@ -15,6 +15,7 @@ interface ItineraryDisplayProps {
   budget?: string;
   onSave: () => void;
   isSaving: boolean;
+  remainingPlaces?: string[];
 }
 
 const BUDGET_RANGES: Record<string, { low: number; high: number }> = {
