@@ -87,6 +87,7 @@ const Index = () => {
       if (error) throw error;
 
       setItinerary(data.itinerary);
+      setRemainingPlaceNames(remainingPlaces);
       setStep("itinerary");
       toast({
         title: "Itinerary generated!",
