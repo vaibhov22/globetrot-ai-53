@@ -1,11 +1,12 @@
+import { useState } from "react";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { Compass, Gem, Route, Mountain, MapPin } from "lucide-react";
-import { CITY_OPTIONAL_ACTIVITIES } from "@/data/optionalActivities";
+import { Compass, MapPin, ChevronDown, ChevronUp } from "lucide-react";
+import { CITY_PLACES } from "@/data/cityPlaces";
 
 interface OptionalActivitiesProps {
   destination: string;
@@ -13,22 +14,27 @@ interface OptionalActivitiesProps {
   aiOptionalPlaces?: string[];
 }
 
-const typeConfig = {
-  "hidden-gem": { icon: Gem, label: "Hidden Gem", color: "text-amber-500 bg-amber-500/10 border-amber-500/20" },
-  alternative: { icon: Route, label: "Alternative", color: "text-blue-500 bg-blue-500/10 border-blue-500/20" },
-  adventure: { icon: Mountain, label: "Adventure", color: "text-emerald-500 bg-emerald-500/10 border-emerald-500/20" },
-};
-
 export const OptionalActivities = ({ destination, remainingPlaces, aiOptionalPlaces }: OptionalActivitiesProps) => {
-  const cityData = CITY_OPTIONAL_ACTIVITIES.find(
+  const [expandedPlace, setExpandedPlace] = useState<string | null>(null);
+
+  const cityData = CITY_PLACES.find(
     (c) => c.city.toLowerCase() === destination.toLowerCase()
   );
 
-  const hasRemainingPlaces = remainingPlaces && remainingPlaces.length > 0;
-  const hasAiOptional = aiOptionalPlaces && aiOptionalPlaces.length > 0;
-  const hasCuratedData = !!cityData;
+  // Merge remaining places + AI suggestions into one unique list
+  const allOtherPlaces = new Set<string>();
+  remainingPlaces?.forEach((p) => allOtherPlaces.add(p));
+  aiOptionalPlaces?.forEach((p) => allOtherPlaces.add(p));
 
-  if (!hasRemainingPlaces && !hasAiOptional && !hasCuratedData) return null;
+  if (allOtherPlaces.size === 0) return null;
+
+  // Match names to full place data for details
+  const placesWithDetails = Array.from(allOtherPlaces).map((name) => {
+    const details = cityData?.places.find(
+      (p) => p.name.toLowerCase() === name.toLowerCase()
+    );
+    return { name, details };
+  });
 
   return (
     <div className="mt-10">
@@ -38,113 +44,61 @@ export const OptionalActivities = ({ destination, remainingPlaces, aiOptionalPla
             <div className="flex items-center gap-3">
               <Compass className="w-7 h-7 text-primary" />
               <span className="text-2xl font-black text-foreground">
-                Optional Activities & Hidden Gems
+                Other Places to Visit
               </span>
             </div>
           </AccordionTrigger>
           <AccordionContent>
-            <div className="px-6 pb-6 pt-2 space-y-6">
-              <p className="text-muted-foreground">
-                Extra places and activities not in your main itinerary — explore at your own pace!
+            <div className="px-6 pb-6 pt-2 space-y-3">
+              <p className="text-muted-foreground mb-4">
+                More places worth exploring in {destination} — click any to see details!
               </p>
-
-              {/* Remaining unselected places */}
-              {hasRemainingPlaces && (
-                <div>
-                  <h4 className="text-lg font-bold text-foreground mb-3 flex items-center gap-2">
-                    <MapPin className="w-5 h-5 text-primary" />
-                    Places You Didn't Select ({remainingPlaces.length})
-                  </h4>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                    {remainingPlaces.map((place, i) => (
-                      <div
-                        key={i}
-                        className="p-4 rounded-xl border border-border/50 hover:shadow-md transition-all duration-300 hover:border-primary/30 group"
-                      >
-                        <div className="flex items-start gap-3">
-                          <div className="p-2 rounded-lg border text-violet-500 bg-violet-500/10 border-violet-500/20 shrink-0">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                {placesWithDetails.map(({ name, details }, i) => {
+                  const isExpanded = expandedPlace === name;
+                  return (
+                    <div
+                      key={i}
+                      onClick={() => setExpandedPlace(isExpanded ? null : name)}
+                      className="p-4 rounded-xl border border-border/50 hover:shadow-md transition-all duration-300 hover:border-primary/30 cursor-pointer group"
+                    >
+                      <div className="flex items-center justify-between gap-2">
+                        <div className="flex items-center gap-3 min-w-0">
+                          <div className="p-2 rounded-lg border text-primary bg-primary/10 border-primary/20 shrink-0">
                             <MapPin className="w-4 h-4" />
                           </div>
-                          <div>
-                            <h4 className="font-bold text-foreground group-hover:text-primary transition-colors">
-                              {place}
-                            </h4>
-                            <span className="inline-block text-xs px-2 py-0.5 rounded-full font-medium border text-violet-500 bg-violet-500/10 border-violet-500/20 mt-1">
-                              Not Selected
+                          <h4 className="font-bold text-foreground group-hover:text-primary transition-colors truncate">
+                            {name}
+                          </h4>
+                        </div>
+                        {details ? (
+                          isExpanded ? (
+                            <ChevronUp className="w-4 h-4 text-muted-foreground shrink-0" />
+                          ) : (
+                            <ChevronDown className="w-4 h-4 text-muted-foreground shrink-0" />
+                          )
+                        ) : null}
+                      </div>
+                      {isExpanded && details && (
+                        <div className="mt-3 pl-11 space-y-2 animate-fade-in">
+                          <p className="text-sm text-muted-foreground leading-relaxed">{details.description}</p>
+                          <div className="flex items-center gap-3 text-sm">
+                            <span className="text-amber-500 font-semibold">⭐ {details.rating}</span>
+                            <span className="capitalize px-2 py-0.5 rounded-full text-xs font-medium border border-border/50 bg-muted/50">
+                              {details.category}
                             </span>
                           </div>
                         </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* AI-generated optional suggestions */}
-              {hasAiOptional && (
-                <div>
-                  <h4 className="text-lg font-bold text-foreground mb-3 flex items-center gap-2">
-                    <Gem className="w-5 h-5 text-amber-500" />
-                    AI Suggestions
-                  </h4>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                    {aiOptionalPlaces.map((place, i) => (
-                      <div
-                        key={i}
-                        className="p-4 rounded-xl border border-border/50 hover:shadow-md transition-all duration-300 hover:border-primary/30 group"
-                      >
-                        <div className="flex items-start gap-3">
-                          <div className="p-2 rounded-lg border text-amber-500 bg-amber-500/10 border-amber-500/20 shrink-0">
-                            <Gem className="w-4 h-4" />
-                          </div>
-                          <p className="font-medium text-foreground group-hover:text-primary transition-colors">
-                            {place}
-                          </p>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* Curated hidden gems */}
-              {hasCuratedData && (
-                <div>
-                  <h4 className="text-lg font-bold text-foreground mb-3 flex items-center gap-2">
-                    <Mountain className="w-5 h-5 text-emerald-500" />
-                    Curated Hidden Gems
-                  </h4>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {cityData.activities.map((activity, i) => {
-                      const config = typeConfig[activity.type];
-                      const Icon = config.icon;
-                      return (
-                        <div
-                          key={i}
-                          className="p-4 rounded-xl border border-border/50 hover:shadow-md transition-all duration-300 hover:border-primary/30 group"
-                        >
-                          <div className="flex items-start gap-3">
-                            <div className={`p-2 rounded-lg border ${config.color} shrink-0`}>
-                              <Icon className="w-4 h-4" />
-                            </div>
-                            <div className="space-y-1">
-                              <h4 className="font-bold text-foreground group-hover:text-primary transition-colors">
-                                {activity.title}
-                              </h4>
-                              <p className="text-sm text-muted-foreground">
-                                {activity.description}
-                              </p>
-                              <span className={`inline-block text-xs px-2 py-0.5 rounded-full font-medium border ${config.color}`}>
-                                {config.label}
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-              )}
+                      )}
+                      {isExpanded && !details && (
+                        <p className="mt-3 pl-11 text-sm text-muted-foreground italic animate-fade-in">
+                          {name}
+                        </p>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
             </div>
           </AccordionContent>
         </AccordionItem>
