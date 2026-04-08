@@ -212,6 +212,7 @@ const Index = () => {
               budget={currentTripData.budget}
               onSave={handleSaveTrip}
               isSaving={isSaving}
+              remainingPlaces={remainingPlaceNames}
             />
           )}
         </div>
