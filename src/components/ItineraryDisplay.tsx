@@ -167,7 +167,7 @@ export const ItineraryDisplay = ({
       <FoodSection destination={destination} />
 
       {/* Optional Activities */}
-      <OptionalActivities destination={destination} />
+      <OptionalActivities destination={destination} remainingPlaces={remainingPlaces} aiOptionalPlaces={itinerary.optional_places} />
     </Card>
   );
 };
