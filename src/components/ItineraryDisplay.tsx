@@ -15,6 +15,7 @@ interface ItineraryDisplayProps {
   budget?: string;
   onSave: () => void;
   isSaving: boolean;
+  remainingPlaces?: string[];
 }
 
 const BUDGET_RANGES: Record<string, { low: number; high: number }> = {
@@ -55,7 +56,8 @@ export const ItineraryDisplay = ({
   endDate, 
   budget,
   onSave, 
-  isSaving 
+  isSaving,
+  remainingPlaces,
 }: ItineraryDisplayProps) => {
   const budgetEst = getBudgetEstimate(budget, startDate, endDate);
 
@@ -165,7 +167,7 @@ export const ItineraryDisplay = ({
       <FoodSection destination={destination} />
 
       {/* Optional Activities */}
-      <OptionalActivities destination={destination} />
+      <OptionalActivities destination={destination} remainingPlaces={remainingPlaces} aiOptionalPlaces={itinerary.optional_places} />
     </Card>
   );
 };

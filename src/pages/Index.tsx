@@ -22,6 +22,7 @@ const Index = () => {
   const [isGenerating, setIsGenerating] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [currentTripData, setCurrentTripData] = useState<TripFormData | null>(null);
+  const [remainingPlaceNames, setRemainingPlaceNames] = useState<string[]>([]);
   const { toast } = useToast();
   const plannerRef = useRef<HTMLDivElement>(null);
 
@@ -86,6 +87,7 @@ const Index = () => {
       if (error) throw error;
 
       setItinerary(data.itinerary);
+      setRemainingPlaceNames(remainingPlaces);
       setStep("itinerary");
       toast({
         title: "Itinerary generated!",
@@ -210,6 +212,7 @@ const Index = () => {
               budget={currentTripData.budget}
               onSave={handleSaveTrip}
               isSaving={isSaving}
+              remainingPlaces={remainingPlaceNames}
             />
           )}
         </div>
