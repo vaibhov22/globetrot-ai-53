@@ -56,7 +56,8 @@ export const ItineraryDisplay = ({
   endDate, 
   budget,
   onSave, 
-  isSaving 
+  isSaving,
+  remainingPlaces,
 }: ItineraryDisplayProps) => {
   const budgetEst = getBudgetEstimate(budget, startDate, endDate);
 
