@@ -182,7 +182,7 @@ const Index = () => {
         onMyTripsClick={() => setView("mytrips")}
       />
       
-      <Hero onGetStarted={handleGetStarted} />
+      <Hero onGetStarted={() => { setStep("form"); setItinerary(null); setCurrentTripData(null); handleGetStarted(); }} />
 
       <section className="py-16 px-4" ref={plannerRef}>
         <div className="container mx-auto max-w-4xl space-y-8">
@@ -211,6 +211,7 @@ const Index = () => {
               endDate={currentTripData.endDate}
               budget={currentTripData.budget}
               onSave={handleSaveTrip}
+              onPlanNew={() => { setStep("form"); setItinerary(null); setCurrentTripData(null); }}
               isSaving={isSaving}
               remainingPlaces={remainingPlaceNames}
             />

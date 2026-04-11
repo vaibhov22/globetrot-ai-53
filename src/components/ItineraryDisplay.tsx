@@ -14,6 +14,7 @@ interface ItineraryDisplayProps {
   endDate: string;
   budget?: string;
   onSave: () => void;
+  onPlanNew?: () => void;
   isSaving: boolean;
   remainingPlaces?: string[];
 }
@@ -56,6 +57,7 @@ export const ItineraryDisplay = ({
   endDate, 
   budget,
   onSave, 
+  onPlanNew,
   isSaving,
   remainingPlaces,
 }: ItineraryDisplayProps) => {
@@ -79,14 +81,25 @@ export const ItineraryDisplay = ({
             <span className="font-medium">{new Date(startDate).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })} - {new Date(endDate).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</span>
           </div>
         </div>
-        <Button 
-          onClick={onSave}
-          disabled={isSaving}
-          className="bg-gradient-to-r from-success to-success/80 hover:from-success/90 hover:to-success text-success-foreground font-bold text-lg px-8 py-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 group"
-        >
-          <Save className="w-5 h-5 mr-2 group-hover:rotate-12 transition-transform duration-300" />
-          {isSaving ? "Saving..." : "Save Trip"}
-        </Button>
+        <div className="flex gap-3">
+          {onPlanNew && (
+            <Button 
+              onClick={onPlanNew}
+              variant="outline"
+              className="font-bold text-lg px-8 py-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
+            >
+              Plan New Trip
+            </Button>
+          )}
+          <Button 
+            onClick={onSave}
+            disabled={isSaving}
+            className="bg-gradient-to-r from-success to-success/80 hover:from-success/90 hover:to-success text-success-foreground font-bold text-lg px-8 py-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 group"
+          >
+            <Save className="w-5 h-5 mr-2 group-hover:rotate-12 transition-transform duration-300" />
+            {isSaving ? "Saving..." : "Save Trip"}
+          </Button>
+        </div>
       </div>
 
       {/* Budget Estimate */}
