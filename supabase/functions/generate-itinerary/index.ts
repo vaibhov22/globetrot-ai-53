@@ -57,6 +57,8 @@ ${placesText}
 ${remainingText}
 ${preferences ? `Preferences: ${preferences}` : ""}
 
+IMPORTANT: The itinerary must START at the destination city (${destination}). Day 1 should begin with: "Take a train/bus from ${origin || "origin"} and arrive in ${destination}, check in to the hotel" — then start exploring ${destination}. Do NOT include any sightseeing or activities in the origin city (${origin || "origin"}). The entire itinerary should be about ${destination} only.
+
 Generate a practical day-wise itinerary. Include:
 - Daily activities with specific recommendations using the selected places
 - Travel flow between places
