@@ -211,6 +211,7 @@ const Index = () => {
               endDate={currentTripData.endDate}
               budget={currentTripData.budget}
               onSave={handleSaveTrip}
+              onPlanNew={() => { setStep("form"); setItinerary(null); setCurrentTripData(null); }}
               isSaving={isSaving}
               remainingPlaces={remainingPlaceNames}
             />
