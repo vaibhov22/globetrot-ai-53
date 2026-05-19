@@ -9,9 +9,10 @@ import { MyTrips } from "@/components/MyTrips";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Place } from "@/data/cityPlaces";
+import { DayAssignment } from "@/components/DayAssignment";
 
 type View = "home" | "auth" | "mytrips";
-type Step = "form" | "places" | "itinerary";
+type Step = "form" | "places" | "assign" | "itinerary";
 
 const Index = () => {
   const [view, setView] = useState<View>("home");
