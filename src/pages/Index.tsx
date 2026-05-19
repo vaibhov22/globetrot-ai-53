@@ -210,6 +210,18 @@ const Index = () => {
               destination={currentTripData.destination}
               onConfirm={handlePlacesConfirm}
               onBack={() => setStep("form")}
+              isLoading={false}
+            />
+          )}
+
+          {step === "assign" && currentTripData && (
+            <DayAssignment
+              destination={currentTripData.destination}
+              selectedPlaces={selectedPlacesState}
+              startDate={currentTripData.startDate}
+              endDate={currentTripData.endDate}
+              onConfirm={handleAssignmentsConfirm}
+              onBack={() => setStep("places")}
               isLoading={isGenerating}
             />
           )}
