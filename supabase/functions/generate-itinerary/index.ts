@@ -14,6 +14,7 @@ type GenerateItineraryRequest = {
   origin?: string;
   selectedPlaces?: string[];
   remainingPlaces?: string[];
+  placeAssignments?: { day: number; places: string[] }[];
 };
 
 type ItineraryDay = {
