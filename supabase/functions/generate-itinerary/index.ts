@@ -356,6 +356,7 @@ Rules:
 ${budgetText ? `Budget level: ${budgetText}` : ""}
 ${placesText}
 ${remainingText}
+${assignmentsText}
 ${preferences ? `Preferences: ${preferences}` : ""}
 
 IMPORTANT: The itinerary must START at the destination city (${destination}). Day 1 should begin with: "Take a train/bus from ${origin} and arrive in ${destination}, check in to the hotel" — then start exploring ${destination}. Do NOT include any sightseeing or activities in the origin city (${origin}). The entire itinerary should be about ${destination} only.
