@@ -23,6 +23,7 @@ const Index = () => {
   const [isGenerating, setIsGenerating] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [currentTripData, setCurrentTripData] = useState<TripFormData | null>(null);
+  const [selectedPlacesState, setSelectedPlacesState] = useState<Place[]>([]);
   const [remainingPlaceNames, setRemainingPlaceNames] = useState<string[]>([]);
   const { toast } = useToast();
   const plannerRef = useRef<HTMLDivElement>(null);
