@@ -14,6 +14,7 @@ type GenerateItineraryRequest = {
   origin?: string;
   selectedPlaces?: string[];
   remainingPlaces?: string[];
+  placeAssignments?: { day: number; places: string[] }[];
 };
 
 type ItineraryDay = {
@@ -344,10 +345,18 @@ Rules:
       ? `Include these as optional suggestions (not in main itinerary): ${remainingPlaces.join(", ")}.`
       : "";
 
+    const assignmentsRaw = Array.isArray(body.placeAssignments) ? body.placeAssignments : [];
+    const assignmentsText = assignmentsRaw.length > 0
+      ? `STRICT DAY ASSIGNMENTS (you MUST place these landmarks on the exact specified day, no other day):\n${assignmentsRaw
+          .map((a) => `Day ${a.day}: ${(a.places || []).join(", ") || "(no specific places — fill with local exploration/food)"}`)
+          .join("\n")}`
+      : "";
+
     const baseUserPrompt = `Plan a ${tripDays}-day trip from ${origin} to ${destination} starting ${startDate} to ${endDate}.
 ${budgetText ? `Budget level: ${budgetText}` : ""}
 ${placesText}
 ${remainingText}
+${assignmentsText}
 ${preferences ? `Preferences: ${preferences}` : ""}
 
 IMPORTANT: The itinerary must START at the destination city (${destination}). Day 1 should begin with: "Take a train/bus from ${origin} and arrive in ${destination}, check in to the hotel" — then start exploring ${destination}. Do NOT include any sightseeing or activities in the origin city (${origin}). The entire itinerary should be about ${destination} only.

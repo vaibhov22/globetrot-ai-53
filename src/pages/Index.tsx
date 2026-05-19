@@ -9,9 +9,10 @@ import { MyTrips } from "@/components/MyTrips";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Place } from "@/data/cityPlaces";
+import { DayAssignment } from "@/components/DayAssignment";
 
 type View = "home" | "auth" | "mytrips";
-type Step = "form" | "places" | "itinerary";
+type Step = "form" | "places" | "assign" | "itinerary";
 
 const Index = () => {
   const [view, setView] = useState<View>("home");
@@ -22,6 +23,7 @@ const Index = () => {
   const [isGenerating, setIsGenerating] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [currentTripData, setCurrentTripData] = useState<TripFormData | null>(null);
+  const [selectedPlacesState, setSelectedPlacesState] = useState<Place[]>([]);
   const [remainingPlaceNames, setRemainingPlaceNames] = useState<string[]>([]);
   const { toast } = useToast();
   const plannerRef = useRef<HTMLDivElement>(null);
@@ -60,6 +62,15 @@ const Index = () => {
 
   const handlePlacesConfirm = async (selectedPlaces: Place[]) => {
     if (!currentTripData) return;
+    setSelectedPlacesState(selectedPlaces);
+    setStep("assign");
+    setTimeout(() => plannerRef.current?.scrollIntoView({ behavior: "smooth" }), 100);
+  };
+
+  const handleAssignmentsConfirm = async (
+    assignments: { day: number; places: string[] }[],
+  ) => {
+    if (!currentTripData) return;
 
     setIsGenerating(true);
 
@@ -67,7 +78,7 @@ const Index = () => {
       (c) => c.city.toLowerCase() === currentTripData.destination.toLowerCase()
     );
     const allPlaceNames = cityData?.places.map((p) => p.name) ?? [];
-    const selectedNames = selectedPlaces.map((p) => p.name);
+    const selectedNames = selectedPlacesState.map((p) => p.name);
     const remainingPlaces = allPlaceNames.filter((n) => !selectedNames.includes(n));
 
     try {
@@ -81,6 +92,7 @@ const Index = () => {
           origin: currentTripData.origin,
           selectedPlaces: selectedNames,
           remainingPlaces,
+          placeAssignments: assignments,
         },
       });
 
@@ -198,6 +210,18 @@ const Index = () => {
               destination={currentTripData.destination}
               onConfirm={handlePlacesConfirm}
               onBack={() => setStep("form")}
+              isLoading={false}
+            />
+          )}
+
+          {step === "assign" && currentTripData && (
+            <DayAssignment
+              destination={currentTripData.destination}
+              selectedPlaces={selectedPlacesState}
+              startDate={currentTripData.startDate}
+              endDate={currentTripData.endDate}
+              onConfirm={handleAssignmentsConfirm}
+              onBack={() => setStep("places")}
               isLoading={isGenerating}
             />
           )}
