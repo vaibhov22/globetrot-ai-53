@@ -345,6 +345,13 @@ Rules:
       ? `Include these as optional suggestions (not in main itinerary): ${remainingPlaces.join(", ")}.`
       : "";
 
+    const assignmentsRaw = Array.isArray(body.placeAssignments) ? body.placeAssignments : [];
+    const assignmentsText = assignmentsRaw.length > 0
+      ? `STRICT DAY ASSIGNMENTS (you MUST place these landmarks on the exact specified day, no other day):\n${assignmentsRaw
+          .map((a) => `Day ${a.day}: ${(a.places || []).join(", ") || "(no specific places — fill with local exploration/food)"}`)
+          .join("\n")}`
+      : "";
+
     const baseUserPrompt = `Plan a ${tripDays}-day trip from ${origin} to ${destination} starting ${startDate} to ${endDate}.
 ${budgetText ? `Budget level: ${budgetText}` : ""}
 ${placesText}
