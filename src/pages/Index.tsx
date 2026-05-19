@@ -62,6 +62,15 @@ const Index = () => {
 
   const handlePlacesConfirm = async (selectedPlaces: Place[]) => {
     if (!currentTripData) return;
+    setSelectedPlacesState(selectedPlaces);
+    setStep("assign");
+    setTimeout(() => plannerRef.current?.scrollIntoView({ behavior: "smooth" }), 100);
+  };
+
+  const handleAssignmentsConfirm = async (
+    assignments: { day: number; places: string[] }[],
+  ) => {
+    if (!currentTripData) return;
 
     setIsGenerating(true);
 
@@ -69,7 +78,7 @@ const Index = () => {
       (c) => c.city.toLowerCase() === currentTripData.destination.toLowerCase()
     );
     const allPlaceNames = cityData?.places.map((p) => p.name) ?? [];
-    const selectedNames = selectedPlaces.map((p) => p.name);
+    const selectedNames = selectedPlacesState.map((p) => p.name);
     const remainingPlaces = allPlaceNames.filter((n) => !selectedNames.includes(n));
 
     try {
@@ -83,6 +92,7 @@ const Index = () => {
           origin: currentTripData.origin,
           selectedPlaces: selectedNames,
           remainingPlaces,
+          placeAssignments: assignments,
         },
       });
 
